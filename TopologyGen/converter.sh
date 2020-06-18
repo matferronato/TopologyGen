@@ -17,6 +17,7 @@ createSwitchs=0
 createRouters=0
 vxlan=0
 vlan=0
+bgp=0
 
 ####PROCURA POR ARGUMENTOS
 echo -e "${YELLOW}Parsing arguments"${NC}
@@ -41,6 +42,9 @@ for (( everyCommand=0; everyCommand < $sizeArray; everyCommand=everyCommand+1));
     if [[ ${commandArray[$everyCommand+1]} == *l* ]]; then
       vlan=1
     fi
+    if [[ ${commandArray[$everyCommand+1]} == *b* ]]; then
+      bgp=1
+    fi
   fi
 done
 
@@ -51,8 +55,9 @@ if [[ $router == "" ]];           then router=0;  echo no router definied, using
 if [[ $oob == "" ]];              then oob=0;     echo no out of bound switch definied, using oob equal to 0; fi
 if [[ $vxlan == 1 ]];             then            echo vxlan will be configured ;                             fi
 if [[ $vlan == 1 ]];              then            echo vlan will be configured ;                              fi
+if [[ $bgp == 1 ]];               then            echo bgp will be configured ;                               fi
 if [[ $createRouters == 1 ]];     then            echo routers machines vxlan will be configured as routers;  fi
-if [[ $createSwitchs == 1 ]];  then               echo switch machines will be configured as switchs;         fi
+if [[ $createSwitchs == 1 ]];     then            echo switch machines will be configured as switchs;         fi
 
 echo -e "${YELLOW}Running ${BLUE}converter.py, ${YELLOW}creating network topology"${NC}
 python converter.py --l0 $server --l1 $switch --l2 $router --l3 $oob
@@ -177,7 +182,54 @@ if [[ $createRouters == 1 ]]; then
     done
 fi
 
-#CRIA VXLAN em construção
+##CRIA BGP
+if [[ $bgp == 1 ]]; then
+	echo -e ${YELLOW}"Setting ${BLUE}bgp ${YELLOW}protocol"${NC}
+  allRouters=`ls | grep router`
+  allOob=`ls | grep oob`
+  totalRouters=$allRouters" "$allOob     #encontra todos as maquinas roteadoras
+	for eachRouter in $totalRouters; do    #para cada maquina encontrada, implementar os comandos de bgp
+		thisFile=${eachRouter}_setup.txt     #arquivo no qual os comandos serão salvos
+    read -a allInterfaces <<< $(cat $eachRouter | awk '{print $3}')    #bash cria array assim
+    read -a allIps <<< $(cat $eachRouter | awk '{print $2}')
+    sizeArray=${#allInterfaces[@]}
+		cp ../../Host_Scripts/bgpd.conf_template.txt ../BGP_Information/${eachRouter}bgpd.conf #copia para a pasta BGP_information uma copia do tamplate para cada roteador
+		cp ../../Host_Scripts/zebra.conf_template.txt ../BGP_Information/${eachRouter}zebra.conf
+		thisBGPFile="../BGP_Information/${eachRouter}bgpd.conf"        #determina o arquivo que será copiado pelo roteador assim como arquivos auxiliares
+		auxBGPFile="../BGP_Information/${eachRouter}bgpd.confAux"
+		thisZebraFile="../BGP_Information/${eachRouter}zebra.conf"
+		auxZebraFile="../BGP_Information/${eachRouter}zebra.confAux"
+		for (( index=0; index < $sizeArray; index=index+1 )); do  #para cada interface de rede
+				bgpFileLineBase=`cat ../BGP_Information/${eachRouter}bgpd.conf | grep -n router-id | sed 's/:.*//'` #encontra a linha cujas infos de rede se encontram abaixo
+				bgpFileLineTarget=$((bgpFileLineBase+1))                                                            #incrementa uma linha para escrever na linha de baixo
+				currentNetwork=`echo ${allIps[index]} | sed -r 's/(([0-9]{1,3}\.){3})[0-9]{1,3}/\10/g'`				      #encontra a rede correspondente a porta e a nomeia com .0
+				thisText="network $currentNetwork"                                                                  #determina o texto a ser escrito
+				sed "$bgpFileLineTarget i $thisText" $thisBGPFile > $auxBGPFile                                     #escreve no arquivo auxiliar na linha determinada
+				mv $auxBGPFile $thisBGPFile                                                                         #arquivo auxiliar se torna arquivo principal
+
+				zebraFileLineBase=`cat ../BGP_Information/${eachRouter}zebra.conf | grep -n enable | sed 's/:.*//'` #procedimento abaixo é o mesmo que o acima, mas para zebra
+				zebraFileLineTarget=$((zebraFileLineBase+1))
+				currentNetwork=${allIps[index]}
+				thisText="interface ${allInterfaces[index]}"				
+				sed "$zebraFileLineTarget i $thisText" $thisZebraFile > $auxZebraFile
+				mv $auxZebraFile $thisZebraFile				 
+
+				thisText="ip address $currentNetwork"
+				zebraFileLineTarget=$((zebraFileLineBase+2))
+				sed "$zebraFileLineTarget i $thisText" $thisZebraFile > $auxZebraFile
+				mv $auxZebraFile $thisZebraFile			
+
+		done
+		echo apt-get install quagga >> ../$thisFile                  #escreve no arquivo de config para baixar o quagga
+		echo sudo sysctl -w net.ipv4.ip_forward=1 >> ../$thisFile    #habilita forward
+		echo "sudo cat $thisBGPFile > /etc/quagga/bgpd.conf" >> ../$thisFile #escreve o arquivo gerado por cima do arquivo default do quagga 
+		echo "sudo cat $thisZebraFile > /etc/quagga/zebra.conf" >> ../$thisFile
+		echo sudo service zebra start >> ../$thisFile                #inicia os daemons
+		echo sudo service bgpd start >> ../$thisFile
+	done 
+fi
+
+#CRIA VXLAN 
 if [[ $vxlan == 1 ]]; then
   echo -e ${YELLOW}"Setting ${BLUE}vxlan ${YELLOW}protocol"${NC}
   allRouters=`ls | grep router` #recupera lista de todas as maquinas roteadores (por definição, maquinas oob não devem ter nenhuma configuração)
@@ -221,17 +273,21 @@ for eachFile in $listOfFiles; do
   echo "cat /vagrant/Guest_Scripts/Interface_Information/hostnames.txt > /etc/hosts" >> ../$thisFile
 done
 
+#CRIA ARQUIVO VAGRANT FILE
 cd ../../ && chmod -R 777 ./
 echo "Creating Vagrantfile"
 python ./reader.py ./topology.dot -p libvirt
 
+#LEVANTA AS MAQUINAS
 echo -e ${YELLOW}"Creating machines"${NC}
 vagrant up
 sleep 20
 
+#CONFIGURA AS MAQUINAS
 allMachines=`ls Guest_Scripts/Interface_Information/ | grep -v hostname | sed 's/.txt//'`
 for eachMachine in $allMachines; do
   thisfile=${eachMachine}.txt_setup.txt
   echo -e ${YELLOW}"Running machine ${BLUE}${eachMachine} ${YELLOW}configs"${NC}
   vagrant ssh $eachMachine -c "sudo /vagrant/Guest_Scripts/$thisfile"
 done
+
