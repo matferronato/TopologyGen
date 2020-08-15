@@ -113,8 +113,8 @@ def createTopLevelConnection (file, parent):
 def createDot(machineNumbers):
 
 	baggage   = ""
-	if os.path.exists("topology.dot"): os.remove("topology.dot")
-	file = open("topology.dot","w+")
+	if os.path.exists("../../TopologyInfo/topology.dot"): os.remove("../../TopologyInfo/topology.dot")
+	file = open("../../TopologyInfo/topology.dot","w+")
 	file.write("graph vx {\n")
 
 	writeTree(machineNumbers, file, "", "root", 0)
@@ -299,8 +299,8 @@ def matchIpAndEth(parent, file):                    #OK..... esse precisa ser ot
 
 
 def createIps(machineNumbers):
-	if os.path.exists("ipList.txt"): os.remove("ipList.txt")
-	file = open("ipList.txt","w+")
+	if os.path.exists("../../Automate/Host_Scripts/ipList.txt"): os.remove("../../Automate/Host_Scripts/ipList.txt")
+	file = open("../../Automate/Host_Scripts/ipList.txt","w+")
 
 
 	numberOfNetworks = getNumberOfNetwork(machineNumbers)

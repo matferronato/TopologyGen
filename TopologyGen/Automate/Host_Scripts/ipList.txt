@@ -1,0 +1,10 @@
+router.1 1.1.1.1/24 eth1
+router.1 3.3.3.1/24 eth50
+switch.1.1 0.0.0.0/24 eth1
+switch.1.1 0.0.0.0/24 eth50
+server.1.1.1 1.1.1.2/24 eth50
+router.2 2.2.2.1/24 eth1
+router.2 3.3.3.2/24 eth49
+switch.2.1 0.0.0.0/24 eth1
+switch.2.1 0.0.0.0/24 eth50
+server.2.1.1 2.2.2.2/24 eth50
