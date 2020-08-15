@@ -276,7 +276,7 @@ done
 #CRIA ARQUIVO VAGRANT FILE
 cd ../../../ && chmod -R 777 ./
 echo "Creating Vagrantfile"
-cd ./source/Python/ && python reader.py ../../TopologyInfo/topology.dot -p libvirt && cd ../../
+cd ./source/Python/ && python reader.py ../../TopologyInfo/topology.dot -p libvirt && mv Vagrantfile ../../Vagrant && cd ../../
 
 #LEVANTA AS MAQUINAS
 echo -e ${YELLOW}"Creating machines"${NC}
