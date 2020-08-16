@@ -1,5 +1,0 @@
-sudo ifconfig eth1 5.5.5.1/24 up
-sudo ifconfig eth2 6.6.6.1/24 up
-sudo ifconfig eth49 10.10.10.2/24 up
-sudo ifconfig eth50 11.11.11.1/24 up
-cat /vagrant/Automate/Guest_Scripts/Interface_Information/hostnames.txt > /etc/hosts

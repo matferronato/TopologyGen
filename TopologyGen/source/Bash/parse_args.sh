@@ -6,12 +6,14 @@ parse_args(){
   vxlan=0
   vlan=0
   bgp=0
+  macro=0
 
   everyCommand=$*
   read -a commandArray <<< $everyCommand
   sizeArray=${#commandArray[@]}
 
   for (( everyCommand=0; everyCommand < $sizeArray; everyCommand=everyCommand+1)); do
+    if [[ ${commandArray[$everyCommand]} == --macro ]];    then macro=1;                                      fi
     if [[ ${commandArray[$everyCommand]} == --l0 ]];       then server=${commandArray[$everyCommand+1]};      fi
     if [[ ${commandArray[$everyCommand]} == --l1 ]];       then switch=${commandArray[$everyCommand+1]};      fi
     if [[ ${commandArray[$everyCommand]} == --l2 ]];       then router=${commandArray[$everyCommand+1]};      fi
@@ -38,7 +40,6 @@ parse_args(){
     fi
   done
 
-
   if [[ $server == "" ]];           then server=1;  echo no server definied, using server equal to 1;           fi
   if [[ $switch == "" ]];           then switch=0;  echo no switch definied, using switch equal to 0;           fi
   if [[ $router == "" ]];           then router=0;  echo no router definied, using router equal to 0;           fi
@@ -48,7 +49,6 @@ parse_args(){
   if [[ $bgp == 1 ]];               then            echo bgp will be configured ;                               fi
   if [[ $createRouters == 1 ]];     then            echo routers machines will be configured as routers;  fi
   if [[ $createSwitchs == 1 ]];     then            echo switch machines will be configured as switchs;         fi
-
 }
 
 main() {

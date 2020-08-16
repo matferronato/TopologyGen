@@ -21,3 +21,4 @@ add_hostnames
 create_vagrantfile
 #running_vagrant
 #apply_configs
+if [[ $macro == 1 ]]; then run_macro $server $switch $router $oob; fi
