@@ -8,7 +8,7 @@ def matchIpAndEth(parent, file, tree):                    #OK..... esse precisa 
 	if(len(children) != 0):                         #se ele nao possui nenhum filho, entao o nodo eh uma folha, encerrando a recursao
 		k = 0                                       #variavel que calcula qual das maquinas switchs esta se conectando com qual
 		for eachChild in children:
-			if (isinstance(eachChild.data, types.StringTypes)) :  #procura se o nodo tem somente um filho. isso so ira ocorrer para folhas, e no caso de haver somente um roteador/switch como ramo
+			if (isinstance(eachChild.data, str)) :  #procura se o nodo tem somente um filho. isso so ira ocorrer para folhas, e no caso de haver somente um roteador/switch como ramo
 				if not ("switch" in eachChild.tag):               # se ele for um switch, entao nao tem ip associado
 					currentEth = "eth50" if ("server" in eachChild.tag) else "eth1"	 #se ele for servidor entao a ligacao esta acima, se for outro, a ligacao esta abaixo
 					file.write(eachChild.tag.replace("\"","") + " " +  eachChild.data + " " + currentEth + "\n")

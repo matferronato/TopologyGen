@@ -40,7 +40,7 @@ parse_args(){
     fi
   done
 
-  if [[ $server == "" ]];           then server=1;  echo no server definied, using server equal to 1;           fi
+  if [[ $server == "" || $server == "0" ]]; then server=1;  echo no server definied, using server equal to 1;           fi
   if [[ $switch == "" ]];           then switch=0;  echo no switch definied, using switch equal to 0;           fi
   if [[ $router == "" ]];           then router=0;  echo no router definied, using router equal to 0;           fi
   if [[ $oob == "" ]];              then oob=0;     echo no out of bound switch definied, using oob equal to 0; fi

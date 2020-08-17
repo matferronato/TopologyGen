@@ -1,0 +1,2 @@
+sudo ifconfig eth1 1.1.1.1/24 up
+cat /vagrant/Automate/Guest_Scripts/Interface_Information/hostnames.txt > /etc/hosts

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/
 cd ./source/Bash
 ./converter.sh $*
 cd ../../

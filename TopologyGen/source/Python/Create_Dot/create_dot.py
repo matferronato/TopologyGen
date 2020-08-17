@@ -12,7 +12,7 @@ def createDot(machineNumbers, tree):
 	file.write("graph vx {\n")
 
 	writeTree(machineNumbers, file, "", "root", 0, tree)
-	tree.show(key=lambda x: x.tag, reverse=True, line_type='ascii-em')
+	#tree.show(key=lambda x: x.tag, reverse=True, line_type='ascii-em')
 	writeConnections(file, "root", tree)
 	writeTopLevelConnection(file, "root", tree)
 
