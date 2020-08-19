@@ -41,14 +41,14 @@ parse_args(){
   done
 
   if [[ $server == "" || $server == "0" ]]; then server=1;  echo no server definied, using server equal to 1;           fi
-  if [[ $switch == "" ]];           then switch=0;  echo no switch definied, using switch equal to 0;           fi
-  if [[ $router == "" ]];           then router=0;  echo no router definied, using router equal to 0;           fi
-  if [[ $oob == "" ]];              then oob=0;     echo no out of bound switch definied, using oob equal to 0; fi
-  if [[ $vxlan == 1 ]];             then            echo vxlan will be configured ;                             fi
-  if [[ $vlan == 1 ]];              then            echo vlan will be configured ;                              fi
-  if [[ $bgp == 1 ]];               then            echo bgp will be configured ;                               fi
-  if [[ $createRouters == 1 ]];     then            echo routers machines will be configured as routers;  fi
-  if [[ $createSwitchs == 1 ]];     then            echo switch machines will be configured as switchs;         fi
+  if [[ $switch == "" || $switch == "0" ]]; then switch=0;  echo no switch definied, using switch equal to 0;           fi
+  if [[ $router == "" || $router == "0" ]]; then router=0;  echo no router definied, using router equal to 0;           fi
+  if [[ $oob == ""    || $oob == "0" ]];    then oob=0;     echo no out of bound switch definied, using oob equal to 0; fi
+  if [[ $vxlan == 1 ]];             then            echo vxlan will be configured ;                                     fi
+  if [[ $vlan == 1 ]];              then            echo vlan will be configured ;                                      fi
+  if [[ $bgp == 1 ]];               then            echo bgp will be configured ;                                       fi
+  if [[ $createRouters == 1 ]];     then            echo routers machines will be configured as routers;                fi
+  if [[ $createSwitchs == 1 ]];     then            echo switch machines will be configured as switchs;                 fi
 }
 
 main() {
