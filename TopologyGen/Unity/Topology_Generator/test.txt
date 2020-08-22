@@ -1,0 +1,13 @@
+Router_0- IP = 1.1.1.Y/24 => Switch_3- IP = 0.0.0.0
+Switch_3- IP = 0.0.0.0 => Server_6- IP = 1.1.1.Y/24
+Switch_3- IP = 0.0.0.0 => Server_5- IP = 1.1.1.Y/24
+Switch_3- IP = 0.0.0.0 => Server_1- IP = 1.1.1.Y/24
+Switch_2- IP = 0.0.0.0 => Server_4- IP = 2.2.2.Y/24
+Router_1- IP = 2.2.2.Y/24 => Switch_2- IP = 0.0.0.0
+Server_2- IP = 3.3.3.Y/24 => Server_3- IP = 3.3.3.Y/24
+Switch_1- IP = 0.0.0.0 => Switch_0- IP = 0.0.0.0
+Switch_1- IP = 0.0.0.0 => Server_3- IP = 3.3.3.Y/24
+Switch_1- IP = 0.0.0.0 => Server_0- IP = 3.3.3.Y/24
+Router_2- IP = 3.3.3.Y/24 => Switch_0- IP = 0.0.0.0
+Router_1- IP = 4.4.4.Y/24 => Router_0- IP = 4.4.4.Y/24
+Router_2- IP = 5.5.5.Y/24 => Router_1- IP = 5.5.5.Y/24

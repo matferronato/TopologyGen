@@ -63,9 +63,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\scripts\address_manager.cs" />
+    <Compile Include="Assets\scripts\background_color.cs" />
     <Compile Include="Assets\scripts\button_handler.cs" />
     <Compile Include="Assets\scripts\drag_and_drop.cs" />
-    <Compile Include="Assets\scripts\line_drawer.cs" />
+    <Compile Include="Assets\scripts\line_creation.cs" />
     <Compile Include="Assets\scripts\magnetic_dop.cs" />
     <Compile Include="Assets\scripts\rename_icon.cs" />
     <Reference Include="Unity.Timeline.Editor">

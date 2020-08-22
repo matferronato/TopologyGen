@@ -4,7 +4,7 @@ using System.Collections;
 
 public class rename_icon : MonoBehaviour
 {
-    static public Text name;
+    //static public Text name;
     // Start is called before the first frame update
     void Start()
     {

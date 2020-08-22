@@ -17,6 +17,8 @@ public class button_handler : MonoBehaviour
     public static Queue<GameObject> serverObjQueue = new Queue<GameObject>();
     public static Queue<GameObject> switchObjQueue = new Queue<GameObject>();
     public static Queue<GameObject> routerObjQueue = new Queue<GameObject>();
+    public static Queue<GameObject> lineObjQueue = new Queue<GameObject>();
+    public static List<Tuple<GameObject, GameObject>> connectionsObjList= new List<Tuple<GameObject, GameObject>>();
 
     public static Queue serverNameQueue = new Queue();
     public static Queue switchNameQueue = new Queue();
@@ -62,10 +64,8 @@ public class button_handler : MonoBehaviour
         var thisServerIcon = Instantiate(ServerButton, new Vector2(Position2d.transform.position.x, Position2d.transform.position.y), Quaternion.identity);
         thisServerIcon.transform.parent = gameObject.transform;
         serverObjQueue.Enqueue(thisServerIcon);
-        Debug.Log(serverObjQueue.Count);
-
-
     }
+
     public void OnClickSwitch()
     {
         if (magnetic_dop.deletedSwitch == true) {
@@ -79,8 +79,8 @@ public class button_handler : MonoBehaviour
         var thisSwitchIcon = Instantiate(SwitchButton, new Vector2(Position2d.transform.position.x, Position2d.transform.position.y), Quaternion.identity);
         thisSwitchIcon.transform.parent = gameObject.transform;
         switchObjQueue.Enqueue(thisSwitchIcon);
-
     }
+
     public void OnClickRouter()
     {
         if (magnetic_dop.deletedRouter== true)
@@ -99,11 +99,12 @@ public class button_handler : MonoBehaviour
 
     public void OnClickRun()
     {
-        string strCmdText;
-        strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
-        System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+        createConnection();
         startRunning = true;
-        StartCoroutine(readNameFile());
+        //string strCmdText;
+        //strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+        //StartCoroutine(readNameFile());
         StopButton.SetActive(true);
         StartButton.SetActive(false);
     }
@@ -113,15 +114,124 @@ public class button_handler : MonoBehaviour
         startRunning = false;
         StopButton.SetActive(false);
         StartButton.SetActive(true);
+    }
+
+    public void createConnection()
+    {
+        createConnectionFile();
+        string path = @".\\test.txt";
+        //using (StreamReader name_file = new StreamReader(path))
+        //{
+        //
+        //}
+    }
+
+    public void cleanIPfromSwitchs()
+    {
+        int currentTotal = switchObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) {
+            var thisSwitch = switchObjQueue.Dequeue();
+            for (int j = 0; j < thisSwitch.GetComponent<drag_and_drop>().ip.Count; j++)
+            {
+                thisSwitch.GetComponent<drag_and_drop>().ip[j] = "0.0.0.0";
+            }
+            switchObjQueue.Enqueue(thisSwitch);
+        }
+    }
+
+    public void fixIP()
+    {
+        if (routerObjQueue.Count == 0)
+        {
+            int currentTotal = serverObjQueue.Count;
+            for (int i = 0; i < currentTotal; i++)
+            {
+                var thisServer = serverObjQueue.Dequeue();
+                for (int j = 0; j < thisServer.GetComponent<drag_and_drop>().ip.Count; j++)
+                {
+                    thisServer.GetComponent<drag_and_drop>().ip[j] = "1.1.1.Y/24";
+                }
+                serverObjQueue.Enqueue(thisServer);
+            }
+        }
+        //else
+        //{
+        //    int currentTotal = serverObjQueue.Count;
+        //    for (int i = 0; i < currentTotal; i++) //para todos os servidores
+        //    {
+        //        var thisServer = serverObjQueue.Dequeue();//para cada conexao no servidor
+        //        for (int j = 0; j < thisServer.GetComponent<drag_and_drop>().connections.Count; j++)
+        //        {
+        //            if (thisServer.GetComponent<drag_and_drop>().ip[j] == "0.0.0.0") //se ainda n tenho ip
+        //            {
+        //                GameObject aux = thisServer.GetComponent<drag_and_drop>().connections[j];
+        //                GameObject greatAux = aux;
+        //                int l = 0;
+        //                while (thisServer.GetComponent<drag_and_drop>().ip[j] == "0.0.0.0") //enquanto minha conexao for 0
+        //                {
+        //                    for (int k = 0; k < aux.GetComponent<drag_and_drop>().connections.Count; k++) //para cada conexão conectada a mim
+        //                    {
+        //                        if(aux.GetComponent<drag_and_drop>().ip[k] != "0.0.0.0") //se conexao tem ip
+        //                        {
+        //                            thisServer.GetComponent<drag_and_drop>().ip[j] = aux.GetComponent<drag_and_drop>().ip[k];
+        //                            break;
+        //                        }
+        //                    }
+        //                    if(l < aux.GetComponent<drag_and_drop>().connections.Count)
+        //                    {
+        //                        aux = greatAux.GetComponent<drag_and_drop>().connections[0];
+        //                    } else
+        //                    {
+        //                        break;
+        //                    }
+        //                    
+        //                }
+        //            }
+        //        }
+        //        serverObjQueue.Enqueue(thisServer);
+        //    }
+        //}
+    }
+
+    public void createConnectionFile()
+    {
+        fixIP();
+        cleanIPfromSwitchs();
+        List<string> Lines = new List<string>();
+        foreach (var connection in connectionsObjList)
+        {
+            //Lines.Add(connection.Item1.name + "-" + connection.Item2.name);
+            int index = connection.Item1.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item2);
+            string IP1 = connection.Item1.GetComponent<drag_and_drop>().ip[index];
+            index = connection.Item2.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item1);
+            string IP2 = connection.Item2.GetComponent<drag_and_drop>().ip[index];
+            Lines.Add(connection.Item1.name + "- IP = " + IP1 + " => " + connection.Item2.name + "- IP = " + IP2);
+
+        }
+
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
+        {
+            foreach (string line in Lines)
+            {
+             file.WriteLine(line);
+            }
+        }
+    }
+
+    public void clearAll()
+    {
         totalServerNumber = 0;
         totalSwitchNumber = 0;
         totalRouterNumber = 0;
+        connectionsObjList.Clear();
         int currentTotal = serverObjQueue.Count;
-        for ( int i = 0; i < currentTotal; i++) { Destroy(serverObjQueue.Dequeue()); }
+        for (int i = 0; i < currentTotal; i++) { Destroy(serverObjQueue.Dequeue()); }
         currentTotal = switchObjQueue.Count;
         for (int i = 0; i < currentTotal; i++) { Destroy(switchObjQueue.Dequeue()); }
         currentTotal = routerObjQueue.Count;
         for (int i = 0; i < currentTotal; i++) { Destroy(routerObjQueue.Dequeue()); }
+        currentTotal = lineObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) { Destroy(lineObjQueue.Dequeue()); }
     }
 
     public void OnClickLines()
@@ -149,6 +259,7 @@ public class button_handler : MonoBehaviour
                 {
                     var thisServer = serverObjQueue.Dequeue();
                     Text thisServerName = thisServer.GetComponentInChildren<Text>();
+                    thisServer.name = line;
                     thisServerName.text = line;
                     serverObjQueue.Enqueue(thisServer);
                 }
@@ -156,6 +267,7 @@ public class button_handler : MonoBehaviour
                 {
                     var thisSwitch = switchObjQueue.Dequeue();
                     Text thisSwitchrName = thisSwitch.GetComponentInChildren<Text>();
+                    thisSwitch.name = line;
                     thisSwitchrName.text = line;
                     switchObjQueue.Enqueue(thisSwitch);
                 }
@@ -163,6 +275,7 @@ public class button_handler : MonoBehaviour
                 {
                     var thisRouter = routerObjQueue.Dequeue();
                     Text thisRouterName = thisRouter.GetComponentInChildren<Text>();
+                    thisRouter.name = line;
                     thisRouterName.text = line;
                     routerObjQueue.Enqueue(thisRouter);
                 }

@@ -157,7 +157,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 16d4bf2d2dce54b49868c4a39eac8551, type: 3}
+  m_Sprite: {fileID: 21300000, guid: aeff162e5c2e42842a6b70a0623868cc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -181,6 +181,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myUniquelNumber: 0
   canvas: {fileID: 0}
+  selected: 0
+  linked: 0
 --- !u!225 &2324735309916848735
 CanvasGroup:
   m_ObjectHideFlags: 0
