@@ -70,6 +70,7 @@
     <Compile Include="Assets\scripts\line_creation.cs" />
     <Compile Include="Assets\scripts\magnetic_dop.cs" />
     <Compile Include="Assets\scripts\rename_icon.cs" />
+    <Compile Include="Assets\scripts\simple_drag.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/Unity/Topology_Generator/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

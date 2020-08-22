@@ -246,6 +246,9 @@ MonoBehaviour:
   Position2d: {fileID: 1293569714}
   StartButton: {fileID: 1881984589}
   StopButton: {fileID: 2083911911}
+  createServer: 0
+  createSwitch: 0
+  createRouter: 0
 --- !u!1 &615224370
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,8 +261,9 @@ GameObject:
   - component: {fileID: 615224374}
   - component: {fileID: 615224373}
   - component: {fileID: 615224372}
+  - component: {fileID: 615224375}
   m_Layer: 5
-  m_Name: Server
+  m_Name: Server_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -374,6 +378,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615224370}
   m_CullTransparentMesh: 0
+--- !u!225 &615224375
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615224370}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,7 +765,7 @@ GameObject:
   - component: {fileID: 1058894932}
   - component: {fileID: 1058894931}
   m_Layer: 5
-  m_Name: Switch
+  m_Name: Switch_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1167,7 +1183,7 @@ GameObject:
   - component: {fileID: 1432066372}
   - component: {fileID: 1432066371}
   m_Layer: 5
-  m_Name: Lines
+  m_Name: Lines_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1185,7 +1201,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2094193232}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -1330,6 +1346,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52dd9a5ccda6c684099a01ea34eabbcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  getTextPrefab: {fileID: 3601711508663480558, guid: 9f7ac9021bcee164b8e122da9f5eec61,
+    type: 3}
   getLine: {fileID: 8971469463687271029, guid: f69db62a1611ed74d970bba84d70a52d, type: 3}
   publicZValue: 10
 --- !u!1 &1688873253
@@ -1345,7 +1363,7 @@ GameObject:
   - component: {fileID: 1688873256}
   - component: {fileID: 1688873255}
   m_Layer: 5
-  m_Name: Router
+  m_Name: Router_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1949,7 +1967,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2094193232}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -2270,8 +2288,8 @@ RectTransform:
   - {fileID: 1058894930}
   - {fileID: 2056824000}
   - {fileID: 1688873254}
-  - {fileID: 1987621479}
   - {fileID: 1432066370}
+  - {fileID: 1987621479}
   - {fileID: 1961705694}
   m_Father: {fileID: 463091227}
   m_RootOrder: 5

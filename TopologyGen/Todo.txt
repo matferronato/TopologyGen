@@ -1,0 +1,9 @@
+FRONT
+
+Mudar nome com keyboard
+Aparecer ETH e IP nos links
+Tela de opções de SO
+tela de opção de extras (sw, router, bgp)
+
+BACK
+mudar sh

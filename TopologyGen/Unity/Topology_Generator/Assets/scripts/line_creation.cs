@@ -8,8 +8,10 @@ using System.Linq;
 
 public class line_creation : MonoBehaviour
 {
+    public GameObject getTextPrefab;
     public GameObject getLine;
     static GameObject defaultLine;
+    public static GameObject textPrefab;
     public static GameObject endPointA;
     public static GameObject endPointB;
     public static float Zvalue;
@@ -25,6 +27,7 @@ public class line_creation : MonoBehaviour
     {
         objA = true;
         defaultLine = getLine;
+        textPrefab = getTextPrefab;
     }
 
     // Update is called once per frame
@@ -59,21 +62,22 @@ public class line_creation : MonoBehaviour
 
             if (endPointA == endPointB) { objA = true;  return; }
 
-            if (endPointB.name.Contains("Router"))
-            {
-                GameObject aux = endPointB;
-                endPointB = endPointA;
-                endPointA = aux;
-            }
-            if (endPointA.name.Contains("Server") && endPointB.name.Contains("Switch"))
-            {
-                GameObject aux = endPointB;
-                endPointB = endPointA;
-                endPointA = aux;
-            }
-
             Tuple<GameObject, GameObject> thisConnection = new Tuple<GameObject, GameObject>(endPointA, endPointB);
             if (!button_handler.connectionsObjList.Contains(thisConnection) && !button_handler.connectionsObjList.Contains(new Tuple<GameObject, GameObject>(thisConnection.Item2, thisConnection.Item1))) {
+                //Debug.Log("AX = " + startMousePos.x.ToString() + "BX = " + mousePos.x.ToString());
+                createTextInterface(endPointA, startMousePos, endPointB, mousePos);
+                if (endPointB.name.Contains("Router"))
+                {
+                    GameObject aux = endPointB;
+                    endPointB = endPointA;
+                    endPointA = aux;
+                }
+                if (endPointA.name.Contains("Server") && endPointB.name.Contains("Switch"))
+                {
+                    GameObject aux = endPointB;
+                    endPointB = endPointA;
+                    endPointA = aux;
+                }
                 button_handler.connectionsObjList.Add(thisConnection);
 
                 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Zvalue));
@@ -83,11 +87,40 @@ public class line_creation : MonoBehaviour
                 line.SetPosition(1, new Vector3(mousePos.x, mousePos.y, 0f));
                 button_handler.lineObjQueue.Enqueue(thisLine);
 
+
                 setupConnections(endPointA, endPointB);
             }
 
             objA = true;
         }
+    }
+
+    public static void createTextInterface(GameObject objA, Vector2 posA, GameObject objB, Vector2 posB)
+    {
+        int deslocXA = 0;
+        int deslocYA = 0;
+        int deslocXB = 0;
+        int deslocYB = 0;
+        if (posA.x < posB.x) { deslocXA = 75; deslocXB = -20; }
+        if (posA.x > posB.x) { deslocXA = -20; deslocXB = 75; }
+        if (posA.y < posB.y) { deslocYA = 0; deslocYB = -90; }
+        if (posA.y > posB.y) { deslocYA = -90; deslocYB = 0; }
+        GameObject tempTextBox = Instantiate(textPrefab, new Vector3(posA.x, posA.y, Zvalue), Quaternion.identity);
+        tempTextBox.transform.SetParent(objA.transform, false);
+        int thisInterface = objA.GetComponent<drag_and_drop>().attatchedText.Count;
+        tempTextBox.name = tempTextBox.transform.parent.name + "_ipText_" + thisInterface.ToString();
+        tempTextBox.transform.position = new Vector2(tempTextBox.transform.position.x + deslocXA, tempTextBox.transform.position.y + deslocYA); 
+        tempTextBox.GetComponent<Text>().color = new Color32(0,0,0, 255);
+        tempTextBox.GetComponent<Text>().text = "IP X.X.X.X";
+        objA.GetComponent<drag_and_drop>().attatchedText.Add(tempTextBox);
+        tempTextBox = Instantiate(textPrefab, new Vector3(posB.x, posB.y, Zvalue), Quaternion.identity);
+        tempTextBox.transform.SetParent(objB.transform, false);
+        thisInterface = objB.GetComponent<drag_and_drop>().attatchedText.Count;
+        tempTextBox.name = tempTextBox.transform.parent.name + "_ipText_" + thisInterface.ToString();
+        tempTextBox.transform.position = new Vector2(tempTextBox.transform.position.x + deslocXB, tempTextBox.transform.position.y + deslocYB);
+        tempTextBox.GetComponent<Text>().color = new Color32(0, 0, 0, 255);
+        tempTextBox.GetComponent<Text>().text = "IP X.X.X.X";
+        objB.GetComponent<drag_and_drop>().attatchedText.Add(tempTextBox);
     }
 
     public static void checkIfNullIp(string IP, GameObject objectB)

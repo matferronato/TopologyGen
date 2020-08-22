@@ -17,6 +17,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     public List<GameObject> connections = new List<GameObject>();
     public List<string> ip = new List<string>();
     public List<string> eth = new List<string>();
+    public List<GameObject> attatchedText = new List<GameObject>();
     public static int serverConnectedNumber;
     public static int switchConnectedNumber;
     public static int routerConnectedNumber;
@@ -112,6 +113,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         if (button_handler.allowLines == true )
         {
             selected = true;
+            Debug.Log(this.gameObject.name);
             line_creation.generateLine(this.gameObject);
         }
     }

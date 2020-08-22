@@ -31,6 +31,10 @@ public class button_handler : MonoBehaviour
     public static bool allowLines;
     public static bool startRunning;
 
+    public bool createServer;
+    public bool createSwitch;
+    public bool createRouter;
+
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +44,9 @@ public class button_handler : MonoBehaviour
         totalRouterNumber = 0;
         allowLines = false;
         startRunning = false;
+        createServer = false;
+        createSwitch = false;
+        createRouter = false;
         StartButton.SetActive(true);
         StopButton.SetActive(false);
     }
@@ -47,54 +54,152 @@ public class button_handler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.mousePosition.x < 558)
+        {
+            if (createServer == true)
+            {
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    if (magnetic_dop.deletedServer == true)
+                    {
+                        magnetic_dop.deletedServer = false;
+                    }
+                    else
+                    {
+                        serverNameQueue.Enqueue(totalServerNumber);
+                        totalServerNumber = totalServerNumber + 1;
+                    }
+                    var thisServerIcon = Instantiate(ServerButton, new Vector2(Input.mousePosition.x, Input.mousePosition.y), Quaternion.identity);
+                    thisServerIcon.transform.parent = gameObject.transform;
+                    serverObjQueue.Enqueue(thisServerIcon);
+                }
+            }
+            else if (createSwitch == true)
+            {
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    if (magnetic_dop.deletedSwitch == true)
+                    {
+                        magnetic_dop.deletedSwitch = false;
+                    }
+                    else
+                    {
+                        switchNameQueue.Enqueue(totalSwitchNumber);
+                        totalSwitchNumber = totalSwitchNumber + 1;
+                    }
+                    var thisSwitchIcon = Instantiate(SwitchButton, new Vector2(Input.mousePosition.x, Input.mousePosition.y), Quaternion.identity);
+                    thisSwitchIcon.transform.parent = gameObject.transform;
+                    switchObjQueue.Enqueue(thisSwitchIcon);
+                }
+            }
+            else if (createRouter == true)
+            {
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    if (magnetic_dop.deletedRouter == true)
+                    {
+                        magnetic_dop.deletedRouter = false;
+                    }
+                    else
+                    {
+                        routerNameQueue.Enqueue(totalRouterNumber);
+                        totalRouterNumber = totalRouterNumber + 1;
+                    }
+                    var thisRouterIcon = Instantiate(RouterButton, new Vector2(Input.mousePosition.x, Input.mousePosition.y), Quaternion.identity);
+                    thisRouterIcon.transform.parent = gameObject.transform;
+                    routerObjQueue.Enqueue(thisRouterIcon);
+                }
+            }
+        }
     }
 
     public void OnClickServer()
     {
-        if (magnetic_dop.deletedServer == true)
-        {
-            magnetic_dop.deletedServer = false;
+        GameObject Linesbutton = GameObject.Find("Lines_Button");
+        GameObject Routerbutton = GameObject.Find("Router_Button");
+        GameObject Switchbutton = GameObject.Find("Switch_Button");
+        GameObject Serverbutton = GameObject.Find("Server_Button");
+        if (createServer == true) { 
+            createServer = false;
+            Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
         }
-        else
-        {
-            serverNameQueue.Enqueue(totalServerNumber);
-            totalServerNumber = totalServerNumber + 1;
+        else {
+            allowLines = false;
+            createServer = true;
+            createSwitch = false;
+            createRouter = false;
+            Serverbutton.GetComponent<Image>().color = new Color32(135, 135, 135, 255);
+            Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
         }
-        var thisServerIcon = Instantiate(ServerButton, new Vector2(Position2d.transform.position.x, Position2d.transform.position.y), Quaternion.identity);
-        thisServerIcon.transform.parent = gameObject.transform;
-        serverObjQueue.Enqueue(thisServerIcon);
     }
 
     public void OnClickSwitch()
     {
-        if (magnetic_dop.deletedSwitch == true) {
-            magnetic_dop.deletedSwitch = false;
+        GameObject Linesbutton = GameObject.Find("Lines_Button");
+        GameObject Routerbutton = GameObject.Find("Router_Button");
+        GameObject Serverbutton = GameObject.Find("Server_Button");
+        GameObject Switchbutton = GameObject.Find("Switch_Button");
+        if (createSwitch == true) { 
+            createSwitch = false;
+            Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
         }
         else
         {
-            switchNameQueue.Enqueue(totalSwitchNumber);
-            totalSwitchNumber = totalSwitchNumber + 1;
+            allowLines = false;
+            createServer = false;
+            createSwitch = true;
+            createRouter = false;
+            Switchbutton.GetComponent<Image>().color = new Color32(135, 135, 135, 255);
+            Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
         }
-        var thisSwitchIcon = Instantiate(SwitchButton, new Vector2(Position2d.transform.position.x, Position2d.transform.position.y), Quaternion.identity);
-        thisSwitchIcon.transform.parent = gameObject.transform;
-        switchObjQueue.Enqueue(thisSwitchIcon);
     }
 
     public void OnClickRouter()
     {
-        if (magnetic_dop.deletedRouter== true)
-        {
-            magnetic_dop.deletedRouter = false;
+        GameObject Linesbutton = GameObject.Find("Lines_Button");
+        GameObject Serverbutton = GameObject.Find("Server_Button");
+        GameObject Switchbutton = GameObject.Find("Switch_Button");
+        GameObject Routerbutton = GameObject.Find("Router_Button");
+        if (createRouter == true) { 
+            createRouter = false;
+            Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
         }
         else
         {
-            routerNameQueue.Enqueue(totalRouterNumber);
-            totalRouterNumber = totalRouterNumber + 1;
+            allowLines = false;
+            createServer = false;
+            createSwitch = false;
+            createRouter = true;
+            Routerbutton.GetComponent<Image>().color = new Color32(135, 135, 135, 255);
+            Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
         }
-        var thisRouterIcon = Instantiate(RouterButton, new Vector2(Position2d.transform.position.x, Position2d.transform.position.y), Quaternion.identity);
-        thisRouterIcon.transform.parent = gameObject.transform;
-        routerObjQueue.Enqueue(thisRouterIcon);
+    }
+    public void OnClickLines()
+    {
+        GameObject Routerbutton = GameObject.Find("Router_Button");
+        GameObject Serverbutton = GameObject.Find("Server_Button");
+        GameObject Switchbutton = GameObject.Find("Switch_Button");
+        GameObject Linesbutton = GameObject.Find("Lines_Button");
+        if (allowLines == true) { 
+            allowLines = false;
+            Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+        } 
+        else { 
+            allowLines = true;
+            createServer = false;
+            createSwitch = false;
+            createRouter = false;
+            Linesbutton.GetComponent<Image>().color = new Color32(135, 135, 135, 255);
+            Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+        }
     }
 
     public void OnClickRun()
@@ -154,43 +259,11 @@ public class button_handler : MonoBehaviour
                 serverObjQueue.Enqueue(thisServer);
             }
         }
-        //else
-        //{
-        //    int currentTotal = serverObjQueue.Count;
-        //    for (int i = 0; i < currentTotal; i++) //para todos os servidores
-        //    {
-        //        var thisServer = serverObjQueue.Dequeue();//para cada conexao no servidor
-        //        for (int j = 0; j < thisServer.GetComponent<drag_and_drop>().connections.Count; j++)
-        //        {
-        //            if (thisServer.GetComponent<drag_and_drop>().ip[j] == "0.0.0.0") //se ainda n tenho ip
-        //            {
-        //                GameObject aux = thisServer.GetComponent<drag_and_drop>().connections[j];
-        //                GameObject greatAux = aux;
-        //                int l = 0;
-        //                while (thisServer.GetComponent<drag_and_drop>().ip[j] == "0.0.0.0") //enquanto minha conexao for 0
-        //                {
-        //                    for (int k = 0; k < aux.GetComponent<drag_and_drop>().connections.Count; k++) //para cada conexão conectada a mim
-        //                    {
-        //                        if(aux.GetComponent<drag_and_drop>().ip[k] != "0.0.0.0") //se conexao tem ip
-        //                        {
-        //                            thisServer.GetComponent<drag_and_drop>().ip[j] = aux.GetComponent<drag_and_drop>().ip[k];
-        //                            break;
-        //                        }
-        //                    }
-        //                    if(l < aux.GetComponent<drag_and_drop>().connections.Count)
-        //                    {
-        //                        aux = greatAux.GetComponent<drag_and_drop>().connections[0];
-        //                    } else
-        //                    {
-        //                        break;
-        //                    }
-        //                    
-        //                }
-        //            }
-        //        }
-        //        serverObjQueue.Enqueue(thisServer);
-        //    }
-        //}
+    }
+
+    public void writeCorrectIPInterface(GameObject thisMachine, int index, string ip)
+    {
+        thisMachine.GetComponent<drag_and_drop>().attatchedText[index].GetComponent<Text>().text = "IP = " + ip;
     }
 
     public void createConnectionFile()
@@ -200,22 +273,22 @@ public class button_handler : MonoBehaviour
         List<string> Lines = new List<string>();
         foreach (var connection in connectionsObjList)
         {
-            //Lines.Add(connection.Item1.name + "-" + connection.Item2.name);
             int index = connection.Item1.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item2);
             string IP1 = connection.Item1.GetComponent<drag_and_drop>().ip[index];
+            writeCorrectIPInterface(connection.Item1, index, IP1);
             index = connection.Item2.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item1);
             string IP2 = connection.Item2.GetComponent<drag_and_drop>().ip[index];
+            writeCorrectIPInterface(connection.Item2, index, IP2);
             Lines.Add(connection.Item1.name + "- IP = " + IP1 + " => " + connection.Item2.name + "- IP = " + IP2);
-
         }
 
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
-        {
-            foreach (string line in Lines)
-            {
-             file.WriteLine(line);
-            }
-        }
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
+        //{
+        //    foreach (string line in Lines)
+        //    {
+        //     file.WriteLine(line);
+        //    }
+        //}
     }
 
     public void clearAll()
@@ -232,11 +305,6 @@ public class button_handler : MonoBehaviour
         for (int i = 0; i < currentTotal; i++) { Destroy(routerObjQueue.Dequeue()); }
         currentTotal = lineObjQueue.Count;
         for (int i = 0; i < currentTotal; i++) { Destroy(lineObjQueue.Dequeue()); }
-    }
-
-    public void OnClickLines()
-    {
-        if (allowLines == true) { allowLines = false; } else { allowLines = true; }
     }
 
     IEnumerator readNameFile()
