@@ -1,0 +1,3 @@
+Linux Ubuntu
+Hashicorp/Bionic64
+Windows 10

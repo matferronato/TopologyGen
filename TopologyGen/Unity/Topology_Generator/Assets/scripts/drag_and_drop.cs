@@ -14,13 +14,17 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     private CanvasGroup canvasGroup;
     public bool selected;
     public bool linked;
+    
     public List<GameObject> connections = new List<GameObject>();
     public List<string> ip = new List<string>();
     public List<string> eth = new List<string>();
     public List<GameObject> attatchedText = new List<GameObject>();
-    public static int serverConnectedNumber;
-    public static int switchConnectedNumber;
-    public static int routerConnectedNumber;
+    public string OS;
+    public int machineSetup;
+
+    public int serverConnectedNumber;
+    public int switchConnectedNumber;
+    public int routerConnectedNumber;
 
 
     private void Awake()
@@ -45,6 +49,8 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             gameObject.name = "Router_" + myUniquelNumber.ToString();
             name.text = " Router_" + myUniquelNumber.ToString();
         }
+        OS = "hashicorp/bionic64";
+        machineSetup = 1;
     }
 
     void Start()
@@ -53,9 +59,9 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         canvas = canvas_list[canvas_list.Length - 1];
         selected = false;
         linked = false;
-        serverConnectedNumber = 0;
-        switchConnectedNumber = 0;
-        routerConnectedNumber = 0;
+        serverConnectedNumber = 1;
+        switchConnectedNumber = 50;
+        routerConnectedNumber = 100;
 
     }
 
@@ -71,6 +77,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         {
             canvasGroup.alpha = .2f;
         }
+
 
     }
 
@@ -99,7 +106,15 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerDown");
+        if (Input.GetMouseButtonDown(1) && button_handler.startRunning == false)
+        {
+            menu_controller.Menu.SetActive(false);
+            if(this.gameObject.tag == "Switch")
+            {
+                menu_controller.Options_Switch.SetActive(true);
+                optSwitch_controller.setCurrentSwitch(this.gameObject);
+            }
+        }
     }
 
     public void OnClick()

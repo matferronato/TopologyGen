@@ -54,6 +54,7 @@ public class button_handler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        checkIfKeyPressed();
         if (Input.mousePosition.x < 558)
         {
             if (createServer == true)
@@ -110,6 +111,50 @@ public class button_handler : MonoBehaviour
                     routerObjQueue.Enqueue(thisRouterIcon);
                 }
             }
+        }
+    }
+
+
+    public void checkIfKeyPressed()
+    {
+        if (Input.GetKeyDown("s"))
+        {
+            OnClickSwitch();
+        }
+        else if (Input.GetKeyDown("w"))
+        {
+            OnClickLines();
+        }
+        else if (Input.GetKeyDown("r"))
+        {
+            OnClickRouter();
+        }
+        else if (Input.GetKeyDown("n"))
+        {
+            OnClickServer();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameObject Linesbutton = GameObject.Find("Lines_Button");
+            GameObject Routerbutton = GameObject.Find("Router_Button");
+            GameObject Switchbutton = GameObject.Find("Switch_Button");
+            GameObject Serverbutton = GameObject.Find("Server_Button");
+            allowLines = false;
+            createServer = false;
+            createSwitch = false;
+            createRouter = false;
+            Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+        }
+        else if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if(startRunning == false)
+            {
+                OnClickRun();
+            }
+            
         }
     }
 
@@ -263,7 +308,8 @@ public class button_handler : MonoBehaviour
 
     public void writeCorrectIPInterface(GameObject thisMachine, int index, string ip)
     {
-        thisMachine.GetComponent<drag_and_drop>().attatchedText[index].GetComponent<Text>().text = "IP = " + ip;
+        string currentEth = thisMachine.GetComponent<drag_and_drop>().eth[index];
+        thisMachine.GetComponent<drag_and_drop>().attatchedText[index].GetComponent<Text>().text = "IP = " + ip + "\n" + currentEth;
     }
 
     public void createConnectionFile()
@@ -282,13 +328,13 @@ public class button_handler : MonoBehaviour
             Lines.Add(connection.Item1.name + "- IP = " + IP1 + " => " + connection.Item2.name + "- IP = " + IP2);
         }
 
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
-        //{
-        //    foreach (string line in Lines)
-        //    {
-        //     file.WriteLine(line);
-        //    }
-        //}
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
+        {
+            foreach (string line in Lines)
+            {
+             file.WriteLine(line);
+            }
+        }
     }
 
     public void clearAll()

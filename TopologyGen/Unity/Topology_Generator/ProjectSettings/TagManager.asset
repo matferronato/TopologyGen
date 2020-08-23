@@ -8,6 +8,8 @@ TagManager:
   - Switch
   - Router
   - Text
+  - Menu
+  - Options_Switch
   layers:
   - Default
   - TransparentFX

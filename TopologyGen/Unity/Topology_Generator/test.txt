@@ -1,4 +1,4 @@
-Server_0- IP = 1.1.1.Y/24 => Switch_0- IP = 0.0.0.0
-Switch_0- IP = 0.0.0.0 => Switch_1- IP = 0.0.0.0
-Switch_1- IP = 0.0.0.0 => Switch_2- IP = 0.0.0.0
-Switch_2- IP = 0.0.0.0 => Router_0- IP = 1.1.1.Y/24
+Server_1- IP = 1.1.1.Y/24 => Switch_0- IP = 0.0.0.0
+Switch_0- IP = 0.0.0.0 => Server_0- IP = 1.1.1.Y/24
+Switch_0- IP = 0.0.0.0 => Server_2- IP = 1.1.1.Y/24
+Switch_0- IP = 0.0.0.0 => Router_0- IP = 1.1.1.Y/24

@@ -105,21 +105,23 @@ public class line_creation : MonoBehaviour
         if (posA.x > posB.x) { deslocXA = -20; deslocXB = 75; }
         if (posA.y < posB.y) { deslocYA = 0; deslocYB = -90; }
         if (posA.y > posB.y) { deslocYA = -90; deslocYB = 0; }
+        
         GameObject tempTextBox = Instantiate(textPrefab, new Vector3(posA.x, posA.y, Zvalue), Quaternion.identity);
         tempTextBox.transform.SetParent(objA.transform, false);
         int thisInterface = objA.GetComponent<drag_and_drop>().attatchedText.Count;
         tempTextBox.name = tempTextBox.transform.parent.name + "_ipText_" + thisInterface.ToString();
         tempTextBox.transform.position = new Vector2(tempTextBox.transform.position.x + deslocXA, tempTextBox.transform.position.y + deslocYA); 
         tempTextBox.GetComponent<Text>().color = new Color32(0,0,0, 255);
-        tempTextBox.GetComponent<Text>().text = "IP X.X.X.X";
+        tempTextBox.GetComponent<Text>().text = "IP X.X.X.X\nEthX";
         objA.GetComponent<drag_and_drop>().attatchedText.Add(tempTextBox);
+        
         tempTextBox = Instantiate(textPrefab, new Vector3(posB.x, posB.y, Zvalue), Quaternion.identity);
         tempTextBox.transform.SetParent(objB.transform, false);
         thisInterface = objB.GetComponent<drag_and_drop>().attatchedText.Count;
         tempTextBox.name = tempTextBox.transform.parent.name + "_ipText_" + thisInterface.ToString();
         tempTextBox.transform.position = new Vector2(tempTextBox.transform.position.x + deslocXB, tempTextBox.transform.position.y + deslocYB);
         tempTextBox.GetComponent<Text>().color = new Color32(0, 0, 0, 255);
-        tempTextBox.GetComponent<Text>().text = "IP X.X.X.X";
+        tempTextBox.GetComponent<Text>().text = "IP X.X.X.X\nEthX";
         objB.GetComponent<drag_and_drop>().attatchedText.Add(tempTextBox);
     }
 
@@ -161,6 +163,31 @@ public class line_creation : MonoBehaviour
             }
         }
         return "not_found";
+    }
+
+    public static void provideEthInterface(GameObject objA, GameObject objB)
+    {
+        if (objB.tag == "Server")
+        {
+            int currentValue = objA.GetComponent<drag_and_drop>().serverConnectedNumber;
+            objA.GetComponent<drag_and_drop>().serverConnectedNumber++;
+            if (objA.tag == "Switch") { objA.GetComponent<drag_and_drop>().eth.Add("swp" + currentValue.ToString()); }
+            else { objA.GetComponent<drag_and_drop>().eth.Add("eth" + currentValue.ToString()); }
+        }
+        else if (objB.tag == "Switch")
+        {
+            int currentValue = objA.GetComponent<drag_and_drop>().switchConnectedNumber;
+            objA.GetComponent<drag_and_drop>().switchConnectedNumber++;
+            if (objA.tag == "Switch") { objA.GetComponent<drag_and_drop>().eth.Add("swp" + currentValue.ToString()); }
+            else { objA.GetComponent<drag_and_drop>().eth.Add("eth" + currentValue.ToString()); }
+        }
+        else if (objB.tag == "Router")
+        {
+            int currentValue = objA.GetComponent<drag_and_drop>().routerConnectedNumber;
+            objA.GetComponent<drag_and_drop>().routerConnectedNumber++;
+            if (objA.tag == "Switch") { objA.GetComponent<drag_and_drop>().eth.Add("swp" + currentValue.ToString()); }
+            else { objA.GetComponent<drag_and_drop>().eth.Add("eth" + currentValue.ToString()); }
+        }
     }
 
     public static void setupConnections(GameObject objectA, GameObject objectB)
@@ -230,6 +257,8 @@ public class line_creation : MonoBehaviour
                 objectB.GetComponent<drag_and_drop>().ip.Add("0.0.0.0");
             }
         }
+        provideEthInterface(objectA, objectB);
+        provideEthInterface(objectB, objectA);
     }
 
 }
