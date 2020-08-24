@@ -4,9 +4,12 @@ ScriptsOnlyBuild:
     - background_color
     - button_handler
     - drag_and_drop
+    - each_checkbox_handler
     - line_creation
     - magnetic_dop
     - menu_controller
+    - optRouter_controller
+    - optServer_controller
     - optSwitch_controller
     - rename_icon
     - simple_drag
@@ -26,6 +29,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Outline
     - UnityEngine.UI.ScrollRect
     - UnityEngine.UI.Scrollbar
+    - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
     - UnityEngine.UI.Toggle
   sceneClasses:
@@ -75,35 +79,43 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9934}
     - Class: 114
-      Script: {instanceID: 10150}
+      Script: {instanceID: 10118}
     - Class: 114
-      Script: {instanceID: 10164}
+      Script: {instanceID: 10152}
     - Class: 114
-      Script: {instanceID: 10236}
+      Script: {instanceID: 10166}
     - Class: 114
-      Script: {instanceID: 10398}
+      Script: {instanceID: 10238}
     - Class: 114
-      Script: {instanceID: 10570}
+      Script: {instanceID: 10400}
     - Class: 114
-      Script: {instanceID: 10646}
+      Script: {instanceID: 10566}
     - Class: 114
-      Script: {instanceID: 10752}
+      Script: {instanceID: 10574}
     - Class: 114
-      Script: {instanceID: 10948}
+      Script: {instanceID: 10650}
     - Class: 114
-      Script: {instanceID: 11012}
+      Script: {instanceID: 10756}
     - Class: 114
-      Script: {instanceID: 11018}
+      Script: {instanceID: 10952}
     - Class: 114
-      Script: {instanceID: 11302}
+      Script: {instanceID: 11016}
     - Class: 114
-      Script: {instanceID: 11328}
+      Script: {instanceID: 11022}
     - Class: 114
-      Script: {instanceID: 11346}
+      Script: {instanceID: 11262}
     - Class: 114
-      Script: {instanceID: 11356}
+      Script: {instanceID: 11308}
     - Class: 114
-      Script: {instanceID: 11370}
+      Script: {instanceID: 11334}
+    - Class: 114
+      Script: {instanceID: 11352}
+    - Class: 114
+      Script: {instanceID: 11362}
+    - Class: 114
+      Script: {instanceID: 11376}
+    - Class: 114
+      Script: {instanceID: 11394}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 120
@@ -139,7 +151,7 @@ ScriptsOnlyBuild:
     className: TMP_SelectionCaret
   - hash:
       serializedVersion: 2
-      Hash: 14ba26d54dbf1e9bcaf825cdbae049e1
+      Hash: 17ea65b5a64a7ea84e7df287c2446883
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: optSwitch_controller
@@ -301,6 +313,12 @@ ScriptsOnlyBuild:
     className: AnimationPlayableAsset
   - hash:
       serializedVersion: 2
+      Hash: 39af6a4f7203391c85bb9a237ad4ba66
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: each_checkbox_handler
+  - hash:
+      serializedVersion: 2
       Hash: aba7b2852ef61d175dd9602e7723d5e5
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -385,6 +403,12 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
+      Hash: 17ea65b5a64a7ea84e7df287c2446883
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: optRouter_controller
+  - hash:
+      serializedVersion: 2
       Hash: 5f1752ed2092162f016c19510c28a8b9
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -397,7 +421,7 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
-      Hash: 1ba6b468f9a3e0c4867b036ac9486c6c
+      Hash: c90e629f9ccc93c57a7090a9ae1f6f4a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: drag_and_drop
@@ -505,6 +529,12 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
+      Hash: 17ea65b5a64a7ea84e7df287c2446883
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: optServer_controller
+  - hash:
+      serializedVersion: 2
       Hash: df434544c9f7b33d1cc7e635b180d279
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -547,7 +577,7 @@ ScriptsOnlyBuild:
     className: TMP_SubMesh
   - hash:
       serializedVersion: 2
-      Hash: 1290b8feba3014ec6afdd5f741824a16
+      Hash: 37f8b8f5639de24e072c6a694b4842df
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: button_handler

@@ -1,5 +1,9 @@
 Router_0
-Router_tereza
+Router_1
 Router_2
 Server_0
 Server_1
+Server_2
+Server_3
+Server_4
+Switch_0

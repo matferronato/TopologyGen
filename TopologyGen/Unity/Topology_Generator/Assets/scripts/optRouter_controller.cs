@@ -17,6 +17,8 @@ public class optRouter_controller : MonoBehaviour
     public GameObject get_toggleOff;
     public GameObject chekBoxContainer;
     public Toggle defaultToggle;
+    public Slider get_thisSlider;
+    public static Slider thisSlider;
 
     public static GameObject toggleOn;
     public static GameObject toggleOff;
@@ -37,6 +39,7 @@ public class optRouter_controller : MonoBehaviour
         toggleOn = get_toggleOn;
         toggleOff = get_toggleOff;
         thisDropdown = get_thisDropdown;
+        thisSlider = get_thisSlider;
         OSOptionsList = getAvaiableOS();
         OSversionOptionsList = getAvaiableOSversion();
         PopulateDropdown(thisDropdown, OSOptionsList);
@@ -48,8 +51,10 @@ public class optRouter_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Text sliderText = thisSlider.GetComponentInChildren<Text>();
+        sliderText.text = "Memory use: "+ thisSlider.value + " MB";
     }
+
 
     public void PopulateCheckBox(List<string> list)
     {
@@ -74,9 +79,9 @@ public class optRouter_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        string path = @"..\\..\\Vagrant\\vagrant_box\\router_services.txt";
+        //string path = @"..\\..\\Vagrant\\vagrant_box\\router_services.txt";
         //GameBuild
-        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\router_services.txt";
+        string path = @"..\\..\\..\\Vagrant\\vagrant_box\\router_services.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
@@ -98,9 +103,9 @@ public class optRouter_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        //string path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
         //GameBuild
-        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
@@ -116,9 +121,9 @@ public class optRouter_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        //string path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
         //GameBuild
-        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
@@ -197,6 +202,7 @@ public class optRouter_controller : MonoBehaviour
         thisName.GetComponent<Text>().text = thisRouter.name;
         thisSetup = thisRouter.GetComponent<drag_and_drop>().machineSetup;
         thisDropdown.value = OSOptionsList.FindIndex(a => a.Contains(thisRouter.GetComponent<drag_and_drop>().OS));
+        thisSlider.value = thisRouter.GetComponent<drag_and_drop>().memory;
         if (thisRouter.GetComponent<drag_and_drop>().machineSetup == 1)
         {
             toggleOn.SetActive(true);
@@ -230,6 +236,7 @@ public class optRouter_controller : MonoBehaviour
         thisRouter.GetComponent<drag_and_drop>().machineSetup = thisSetup;
         List<bool> clonedList = new List<bool>(BoolServiceList);
         thisRouter.GetComponent<drag_and_drop>().services = clonedList;
+        thisRouter.GetComponent<drag_and_drop>().memory = (int)thisSlider.value;
         close();
     }
 

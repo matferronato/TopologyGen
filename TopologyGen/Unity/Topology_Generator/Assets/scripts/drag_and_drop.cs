@@ -21,6 +21,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     public List<GameObject> attatchedText = new List<GameObject>();
     public string OS;
     public string OSversion;
+    public int memory;
     public int machineSetup;
     public List<bool> services = new List<bool>();
 
@@ -42,6 +43,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             OS = optServer_controller.OSOptionsList[0];
             OSversion = optServer_controller.OSversionOptionsList[0];
             machineSetup = 1;
+            memory = 500;
             foreach (string service in optServer_controller.ServicesOptionsList)
             {
                 services.Add(false);
@@ -56,6 +58,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             OS = optSwitch_controller.OSOptionsList[0];
             OSversion = optSwitch_controller.OSversionOptionsList[0];
             machineSetup = 1;
+            memory = 500;
             foreach (string service in optSwitch_controller.ServicesOptionsList) {
                 services.Add(false);
             }
@@ -69,6 +72,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             OS = optRouter_controller.OSOptionsList[0];
             OSversion = optRouter_controller.OSversionOptionsList[0];
             machineSetup = 1;
+            memory = 500;
             foreach (string service in optRouter_controller.ServicesOptionsList)
             {
                 services.Add(false);
@@ -93,7 +97,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     {
         var viewPortPos = Camera.main.WorldToViewportPoint(transform.position);
         //Debug.Log(viewPortPos);
-        if (viewPortPos.y < 0.1 || viewPortPos.x < 0.2 || viewPortPos.y > 56 || viewPortPos.x > 56 )
+        if (viewPortPos.y < button_handler.bottomBoundary || viewPortPos.x < button_handler.leftBoundary || viewPortPos.y > button_handler.upperBoundary || viewPortPos.x > button_handler.rightBoundary)
         {
             UnityEngine.Object.Destroy(gameObject);
         }
@@ -161,15 +165,14 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         {
             string strCmdText;
             //GameView
-            strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
-            //GameBuild
             //strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            //GameBuild
+            strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
             System.Diagnostics.Process.Start("CMD.exe", strCmdText);
         }
         if (button_handler.allowLines == true )
         {
             selected = true;
-            Debug.Log(this.gameObject.name);
             line_creation.generateLine(this.gameObject);
         }
     }

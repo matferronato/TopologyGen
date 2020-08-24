@@ -64,7 +64,6 @@ public class line_creation : MonoBehaviour
 
             Tuple<GameObject, GameObject> thisConnection = new Tuple<GameObject, GameObject>(endPointA, endPointB);
             if (!button_handler.connectionsObjList.Contains(thisConnection) && !button_handler.connectionsObjList.Contains(new Tuple<GameObject, GameObject>(thisConnection.Item2, thisConnection.Item1))) {
-                //Debug.Log("AX = " + startMousePos.x.ToString() + "BX = " + mousePos.x.ToString());
                 createTextInterface(endPointA, startMousePos, endPointB, mousePos);
                 if (endPointB.name.Contains("Router"))
                 {

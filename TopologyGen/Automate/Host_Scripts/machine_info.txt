@@ -1,5 +1,9 @@
-Router_0 Linux Ubuntu 1.1 router=True  vxlan=False bgp=False hostname=False
-Router_tereza Linux Ubuntu 1.1 router=True  vxlan=False bgp=False hostname=False
-Router_2 Linux Ubuntu 1.1 router=True  vxlan=False bgp=False hostname=False
-Server_0 Hashicorp/Bionic64 1.1 server=True  hostname=False
-Server_1 Linux Ubuntu 1.1 server=True  hostname=False
+Router_0 Linux Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_1 Linux Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_2 Linux Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Server_0 Linux Ubuntu 1.1 500MB server=True  hostname=False
+Server_1 Linux Ubuntu 1.1 500MB server=True  hostname=False
+Server_2 Linux Ubuntu 1.1 500MB server=True  hostname=False
+Server_3 Linux Ubuntu 1.1 500MB server=True  hostname=False
+Server_4 Linux Ubuntu 1.1 500MB server=True  hostname=False
+Switch_0 Linux Ubuntu 1.1 500MB switch=True  vlan=False hostname=False

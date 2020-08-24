@@ -11,7 +11,6 @@ public class magnetic_dop : MonoBehaviour, IDropHandler
     public static bool deletedRouter = false;
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("OnDrop");
         if (eventData.pointerDrag != null)
         {
             if (eventData.pointerDrag.tag == "Server") {
