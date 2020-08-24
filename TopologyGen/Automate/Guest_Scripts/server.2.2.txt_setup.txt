@@ -1,4 +1,4 @@
-sudo ifconfig eth50 2.2.2.4/24 up
+sudo ifconfig eth50 6.6.6.2/24 up
 sudo ip route del 0/0
-sudo ip route add 0/0 via 2.2.2.1 dev eth50
+sudo ip route add 0/0 via 6.6.6.1 dev eth50
 cat /vagrant/Automate/Guest_Scripts/Interface_Information/hostnames.txt > /etc/hosts

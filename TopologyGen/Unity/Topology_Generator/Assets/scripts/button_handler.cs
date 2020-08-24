@@ -27,15 +27,16 @@ public class button_handler : MonoBehaviour
     public static int totalServerNumber;
     public static int totalSwitchNumber;
     public static int totalRouterNumber;
+    public bool createServer;
+    public bool createSwitch;
+    public bool createRouter;
 
     public static bool allowLines;
     public static bool startRunning;
     public static bool optionRunning;
 
-    public bool createServer;
-    public bool createSwitch;
-    public bool createRouter;
-
+    public List<string> possibleNetworks = new List<string>();
+    public List<GameObject> allMachines = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -264,15 +265,17 @@ public class button_handler : MonoBehaviour
 
     public void OnClickRun()
     {
-        createConnection();
+        allMachines.Clear();
+        possibleNetworks.Clear();
+        setupTopologyFiles();
         startRunning = true;
         string strCmdText;
         //GameView
-        strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        //strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
         //GameBuild
         //strCmdText = "/C ..\\..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
-        System.Diagnostics.Process.Start("CMD.exe", strCmdText);
-        StartCoroutine(readNameFile());
+        //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+        //StartCoroutine(readNameFile());
         StopButton.SetActive(true);
         StartButton.SetActive(false);
     }
@@ -284,17 +287,66 @@ public class button_handler : MonoBehaviour
         StartButton.SetActive(true);
     }
 
-    public void createConnection()
+    public void clearAll()
+    {
+        totalServerNumber = 0;
+        totalSwitchNumber = 0;
+        totalRouterNumber = 0;
+        connectionsObjList.Clear();
+        possibleNetworks.Clear();
+        allMachines.Clear();
+        int currentTotal = serverObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) { Destroy(serverObjQueue.Dequeue()); }
+        currentTotal = switchObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) { Destroy(switchObjQueue.Dequeue()); }
+        currentTotal = routerObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) { Destroy(routerObjQueue.Dequeue()); }
+        currentTotal = lineObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) { Destroy(lineObjQueue.Dequeue()); }
+    }
+
+    public void writeDotFile()
+    {
+        List<string> Lines = new List<string>();
+        string ConnectionText = "\"!\":\"@\" -- \"$\":\"%\"";
+        string CreationText = "\"%\" [function=\"leaf\" vagrant=\"eth1\" os=\"!\" version=\"@\" memory=\"500\" config=\"./helper_scripts/config_production_switch.sh\" ]";
+        Lines.Add("graph vx {");
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\TopologyInfo\\topology.dot"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\TopologyInfo\\topology.dot"))
+        {
+            foreach (GameObject machine in allMachines)
+            {
+                string currentStringCreation = CreationText;
+                string currentName = machine.name;
+                string currentOS = machine.GetComponent<drag_and_drop>().OS;
+                string currentOSversion = machine.GetComponent<drag_and_drop>().OSversion;
+                currentStringCreation = currentStringCreation.Replace("%", currentName).Replace("!", currentOS).Replace("@", currentOSversion);
+                Lines.Add(currentStringCreation);
+            }
+            foreach (var connection in connectionsObjList)
+            {
+                int index1 = connection.Item1.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item2);
+                int index2 = connection.Item2.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item1);
+                string eth1 = connection.Item1.GetComponent<drag_and_drop>().eth[index1];
+                string eth2 = connection.Item2.GetComponent<drag_and_drop>().eth[index2];
+                string currentStringConnection = ConnectionText;
+                currentStringConnection = currentStringConnection.Replace("!", connection.Item1.name).Replace("@", eth1).Replace("$", connection.Item2.name).Replace("%", eth2);
+                Lines.Add(currentStringConnection);
+            }
+            Lines.Add("}");
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+    public void setupTopologyFiles()
     {
         createConnectionFile();
-        //GameView
-        //string path = @".\\test.txt";
-        //GameBuild
-        //string path = @"..\\test.txt";
-        //using (StreamReader name_file = new StreamReader(path))
-        //{
-        //
-        //}
+        writeDotFile();
     }
 
     public void cleanIPfromSwitchs()
@@ -333,49 +385,258 @@ public class button_handler : MonoBehaviour
         thisMachine.GetComponent<drag_and_drop>().attatchedText[index].GetComponent<Text>().text = "IP = " + ip + "\n" + currentEth;
     }
 
-    public void createConnectionFile()
+    public void changeDefaultIPIdentificator()
     {
-        fixIP();
-        cleanIPfromSwitchs();
-        List<string> Lines = new List<string>();
-        foreach (var connection in connectionsObjList)
+        string defaultIP = "X.X.X.Y/24";
+        
+        for(int i = 1; i < address_manager.currentValue; i++)
         {
-            int index = connection.Item1.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item2);
-            string IP1 = connection.Item1.GetComponent<drag_and_drop>().ip[index];
-            writeCorrectIPInterface(connection.Item1, index, IP1);
-            index = connection.Item2.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item1);
-            string IP2 = connection.Item2.GetComponent<drag_and_drop>().ip[index];
-            writeCorrectIPInterface(connection.Item2, index, IP2);
-            Lines.Add(connection.Item1.name + "- IP = " + IP1 + " => " + connection.Item2.name + "- IP = " + IP2);
+            string currentIP = defaultIP.Replace("X", i.ToString());
+            possibleNetworks.Add(currentIP);
         }
-
-        //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
-        //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\test.txt"))
+        foreach(string thisIp in possibleNetworks)
         {
-            foreach (string line in Lines)
+            int i = 3;
+            bool flagFirstRouter = false;
+            foreach(GameObject thisMachine in allMachines)
             {
-             file.WriteLine(line);
+                for (int indexIP = 0; indexIP < thisMachine.GetComponent<drag_and_drop>().ip.Count; indexIP++)
+                {
+                    string connectionIP = thisMachine.GetComponent<drag_and_drop>().ip[indexIP];
+                    if (connectionIP.Contains(thisIp))
+                    {
+                        if (thisMachine.name.Contains("Router"))
+                        {
+                            if(flagFirstRouter == false)
+                            {
+                                string newIP = thisIp.Replace("Y", "1");
+                                thisMachine.GetComponent<drag_and_drop>().ip[indexIP] = newIP;
+                                flagFirstRouter = true;
+                            }
+                            else
+                            {
+                                string newIP = thisIp.Replace("Y", "2");
+                                thisMachine.GetComponent<drag_and_drop>().ip[indexIP] = newIP;
+                            }
+                        }
+                        else
+                        {
+                            string newIP = thisIp.Replace("Y", i.ToString());
+                            i++;
+                            thisMachine.GetComponent<drag_and_drop>().ip[indexIP] = newIP;
+                        }
+                    }
+                }
             }
         }
     }
 
-    public void clearAll()
+    public void getAllMachines()
     {
-        totalServerNumber = 0;
-        totalSwitchNumber = 0;
-        totalRouterNumber = 0;
-        connectionsObjList.Clear();
-        int currentTotal = serverObjQueue.Count;
-        for (int i = 0; i < currentTotal; i++) { Destroy(serverObjQueue.Dequeue()); }
+        int currentTotal = routerObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++) {
+            GameObject oneRouter = routerObjQueue.Dequeue();
+            allMachines.Add(oneRouter);
+            routerObjQueue.Enqueue(oneRouter);
+        }
+        currentTotal = serverObjQueue.Count;
+        for (int i = 0; i < currentTotal; i++)
+        {
+            GameObject oneServer = serverObjQueue.Dequeue();
+            allMachines.Add(oneServer);
+            serverObjQueue.Enqueue(oneServer);
+        }
         currentTotal = switchObjQueue.Count;
-        for (int i = 0; i < currentTotal; i++) { Destroy(switchObjQueue.Dequeue()); }
-        currentTotal = routerObjQueue.Count;
-        for (int i = 0; i < currentTotal; i++) { Destroy(routerObjQueue.Dequeue()); }
-        currentTotal = lineObjQueue.Count;
-        for (int i = 0; i < currentTotal; i++) { Destroy(lineObjQueue.Dequeue()); }
+        for (int i = 0; i < currentTotal; i++)
+        {
+            GameObject oneSwitch = switchObjQueue.Dequeue();
+            allMachines.Add(oneSwitch);
+            switchObjQueue.Enqueue(oneSwitch);
+        }
     }
+
+    public void writeAllNetworks()
+    {
+        List<string> Lines = new List<string>();
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
+        {
+            foreach(string thisIp in possibleNetworks)
+            {
+                string newIP = thisIp.Replace("Y", "0");
+                Lines.Add(newIP);
+            }
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+    public void writeAllMachines()
+    {
+        List<string> Lines = new List<string>();
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
+        {
+            foreach (GameObject machine in allMachines)
+            {
+                Lines.Add(machine.name);
+            }
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+    public void writeDetailedIPInfo()
+    {
+        List<string> Lines = new List<string>();
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
+        {
+            foreach (GameObject thisMachine in allMachines)
+            {
+                for (int index = 0; index < thisMachine.GetComponent<drag_and_drop>().connections.Count; index++)
+                {
+                    string ipConnection = thisMachine.GetComponent<drag_and_drop>().ip[index];
+                    string ethConnection = thisMachine.GetComponent<drag_and_drop>().eth[index];
+                    Lines.Add(thisMachine.name + " " + ipConnection + " " + ethConnection);
+                }
+
+            }
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+    public void writeDetailedMachineInfo()
+    {
+        List<string> Lines = new List<string>();
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
+        {
+            foreach (GameObject thisMachine in allMachines)
+            {
+                string machineName = thisMachine.name;
+                string OS = thisMachine.GetComponent<drag_and_drop>().OS;
+                string OSversion = thisMachine.GetComponent<drag_and_drop>().OSversion;
+                string type;
+                if (thisMachine.tag == "Server") { type = "server"; }
+                else if (thisMachine.tag == "Switch") { type = "switch"; }
+                else { type = "router"; }
+                string status;
+                if (thisMachine.GetComponent<drag_and_drop>().machineSetup == 1) { status = "True"; }
+                else { status = "False"; }
+                status = type + "=" + status;
+
+                string protocols = "";
+                if (thisMachine.tag == "Server") {
+                    for (int index = 0; index < optServer_controller.ServicesOptionsList.Count ; index++)
+                    {
+                        protocols = protocols + " " + optServer_controller.ServicesOptionsList[index] + "=" + thisMachine.GetComponent<drag_and_drop>().services[index].ToString();
+                    }
+                }
+                else if (thisMachine.tag == "Switch") 
+                {
+                    for (int index = 0; index < optSwitch_controller.ServicesOptionsList.Count; index++)
+                    {
+                        protocols = protocols + " " + optSwitch_controller.ServicesOptionsList[index] + "=" + thisMachine.GetComponent<drag_and_drop>().services[index].ToString();
+                    }
+                }
+                else 
+                {
+                    {
+                        for (int index = 0; index < optRouter_controller.ServicesOptionsList.Count; index++)
+                        {
+                            protocols = protocols + " " + optRouter_controller.ServicesOptionsList[index] + "=" + thisMachine.GetComponent<drag_and_drop>().services[index].ToString();
+                        }
+                    }
+                }
+                Lines.Add(machineName + " " + OS + " " + OSversion + " " + status + " " + protocols);
+            }
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+    public void writePairConnections()
+    {
+        List<string> Lines = new List<string>();
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections.txt"))
+        {
+            foreach (var connection in connectionsObjList)
+            {
+                Lines.Add(connection.Item1.name + " " + "---" + " " + connection.Item2.name);
+            }
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+
+    public void writePairConnectionsDetailed()
+    {
+        Debug.Log("ENTREI");
+        List<string> Lines = new List<string>();
+        //GameView
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
+        {
+            foreach (var connection in connectionsObjList)
+            {
+                int index1 = connection.Item1.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item2);
+                int index2 = connection.Item2.GetComponent<drag_and_drop>().connections.IndexOf(connection.Item1);
+                string IP1 = connection.Item1.GetComponent<drag_and_drop>().ip[index1];
+                string IP2 = connection.Item2.GetComponent<drag_and_drop>().ip[index2];
+                string eth1 = connection.Item1.GetComponent<drag_and_drop>().eth[index1];
+                string eth2 = connection.Item2.GetComponent<drag_and_drop>().eth[index2];
+                writeCorrectIPInterface(connection.Item1, index1, IP1);
+                writeCorrectIPInterface(connection.Item2, index2, IP2);
+                Lines.Add(connection.Item1.name + " " +IP1 + " " + eth1 + " " + "---" + " " + connection.Item2.name + " " + IP2 + " " + eth2);
+            }
+            foreach (string line in Lines)
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+
+
+    public void createConnectionFile()
+    {
+        getAllMachines();
+        fixIP();
+        cleanIPfromSwitchs();
+        changeDefaultIPIdentificator();
+        writeAllMachines();
+        writeAllNetworks();
+        writeDetailedIPInfo();
+        writeDetailedMachineInfo();
+        writePairConnectionsDetailed();
+        writePairConnections();
+    }
+
+
 
     IEnumerator readNameFile()
     {
