@@ -4,35 +4,87 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
+using System.Linq;
 
 public class optSwitch_controller : MonoBehaviour
 {
     static GameObject thisSwitch;
     public GameObject get_thisName;
     public InputField thisTextInput;
-    public Dropdown thisDropdown;
+    public Dropdown get_thisDropdown;
+    public static Dropdown thisDropdown;
     public GameObject get_toggleOn;
     public GameObject get_toggleOff;
+    public GameObject chekBoxContainer;
+    public Toggle defaultToggle;
 
     public static GameObject toggleOn;
     public static GameObject toggleOff;
     static GameObject thisName;
-    public static List<string> OSOptionsList;
+    public static List<string> OSOptionsList = new List<string>();
+    public static List<string> OSversionOptionsList = new List<string>();
     static int thisSetup;
+    public static List<string> ServicesOptionsList = new List<string>();
+    public static List<Toggle> CheckBoxObjectList = new List<Toggle>();
+    public static List<bool> BoolServiceList = new List<bool>();
+
+    public static bool blockToggleFunctions;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         thisName = get_thisName;
-        OSOptionsList = getAvaiableOS();
-        PopulateDropdown(thisDropdown,OSOptionsList);
         toggleOn = get_toggleOn;
         toggleOff = get_toggleOff;
+        thisDropdown = get_thisDropdown;
+        OSOptionsList = getAvaiableOS();
+        OSversionOptionsList = getAvaiableOSversion();
+        PopulateDropdown(thisDropdown,OSOptionsList);
+        ServicesOptionsList = getAvaiableCheckBoxOptions();
+        PopulateCheckBox(ServicesOptionsList);
+        blockToggleFunctions = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public void PopulateCheckBox(List<string> list)
+    {
+        int i = 0;
+        foreach(string service in list)
+        {
+            var thisCheckBox = Instantiate(defaultToggle, new Vector2(chekBoxContainer.transform.position.x, chekBoxContainer.transform.position.y), Quaternion.identity);
+            thisCheckBox.transform.parent = chekBoxContainer.transform;
+            thisCheckBox.name = "checkBox" + i.ToString();
+            thisCheckBox.GetComponentInChildren<Text>().text = service;
+            thisCheckBox.isOn = false;
+            thisCheckBox.transform.position = new Vector2(thisCheckBox.transform.position.x, thisCheckBox.transform.position.y - (i * 20));
+            thisCheckBox.onValueChanged.AddListener((bool toggled) => { each_checkbox_handler.toggleService(toggled ? true : false, thisCheckBox.name, chekBoxContainer.name); });
+            CheckBoxObjectList.Add(thisCheckBox);
+            BoolServiceList.Add(false);
+            i++;
+        }
+    }
+
+    public List<string> getAvaiableCheckBoxOptions()
+    {
+        List<string> thisList = new List<string>();
+        string line;
+        //GameView
+        string path = @"..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        //GameBuild
+        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        using (StreamReader os_file = new StreamReader(path))
+        {
+            while ((line = os_file.ReadLine()) != null)
+            {
+                thisList.Add(line);
+            }
+        }
+        return thisList;
     }
 
     public void PopulateDropdown(Dropdown dropdown, List<string> optionsArray)
@@ -41,11 +93,32 @@ public class optSwitch_controller : MonoBehaviour
         dropdown.AddOptions(optionsArray);
     }
 
+    public List<string> getAvaiableOSversion()
+    {
+        List<string> thisList = new List<string>();
+        string line;
+        //GameView
+        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        //GameBuild
+        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        using (StreamReader os_file = new StreamReader(path))
+        {
+            while ((line = os_file.ReadLine()) != null)
+            {
+                thisList.Add(line);
+            }
+        }
+        return thisList;
+    }
+
     public List<string> getAvaiableOS()
     {
         List<string> thisList = new List<string> ();
         string line;
+        //GameView
         string path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        //GameBuild
+        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
@@ -84,24 +157,6 @@ public class optSwitch_controller : MonoBehaviour
         return null;
     }
 
-    public static void setCurrentSwitch(GameObject otherSwitch)
-    {
-        thisSwitch = otherSwitch;
-        thisName.GetComponent<Text>().text = thisSwitch.name;
-        thisSetup = thisSwitch.GetComponent<drag_and_drop>().machineSetup;
-        if (thisSwitch.GetComponent<drag_and_drop>().machineSetup == 1)
-        {
-            toggleOn.SetActive(true);
-            toggleOff.SetActive(false);
-        }
-        else
-        {
-            toggleOn.SetActive(false);
-            toggleOff.SetActive(true);
-        }
-
-    }
-
     public void giveNewName()
     {
         string thisText = thisTextInput.text;
@@ -116,26 +171,83 @@ public class optSwitch_controller : MonoBehaviour
     }
 
     public void giveOSOption()
-    {
-        Debug.Log("old os = " + thisSwitch.GetComponent<drag_and_drop>().OS);
+    { 
         thisSwitch.GetComponent<drag_and_drop>().OS = thisDropdown.options[thisDropdown.value].text;
-        Debug.Log("new os = " + thisSwitch.GetComponent<drag_and_drop>().OS);
+    }
+
+
+
+    public void resetMenuIcons()
+    {
+        GameObject Linesbutton = GameObject.Find("Lines_Button");
+        GameObject Routerbutton = GameObject.Find("Router_Button");
+        GameObject Switchbutton = GameObject.Find("Switch_Button");
+        GameObject Serverbutton = GameObject.Find("Server_Button");
+        Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+        Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+        Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+        Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+    }
+
+    public static void setCurrentSwitch(GameObject otherSwitch)
+    {
+        int i = 0;
+        blockToggleFunctions = true;
+        thisSwitch = otherSwitch;
+        thisName.GetComponent<Text>().text = thisSwitch.name;
+        thisSetup = thisSwitch.GetComponent<drag_and_drop>().machineSetup;
+        thisDropdown.value = OSOptionsList.FindIndex(a => a.Contains(thisSwitch.GetComponent<drag_and_drop>().OS));
+        if (thisSwitch.GetComponent<drag_and_drop>().machineSetup == 1)
+        {
+            toggleOn.SetActive(true);
+            toggleOff.SetActive(false);
+        }
+        else
+        {
+            toggleOn.SetActive(false);
+            toggleOff.SetActive(true);
+        }
+        List<bool> clonedList = new List<bool>(thisSwitch.GetComponent<drag_and_drop>().services);
+        BoolServiceList = clonedList;
+        foreach (Toggle checkbox in CheckBoxObjectList)
+        {
+            if (BoolServiceList[i] == true)
+            {
+               checkbox.isOn = true;
+            }
+            else
+            {
+                checkbox.isOn = false;
+            }
+            i++;
+        }
     }
 
     public void check()
     {
         giveNewName();
         giveOSOption();
-        close();
         thisSwitch.GetComponent<drag_and_drop>().machineSetup = thisSetup;
-
+        List<bool> clonedList = new List<bool>(BoolServiceList);
+        thisSwitch.GetComponent<drag_and_drop>().services = clonedList;
+        close();
     }
 
     public void close()
     {
+        blockToggleFunctions = true;
+        int i = 0;
+        foreach (Toggle checkbox in CheckBoxObjectList)
+        {
+            checkbox.isOn = false;
+            BoolServiceList[i] = false;
+            i++;
+        }
         menu_controller.Menu.SetActive(true);
         menu_controller.Options_Server.SetActive(false);
         menu_controller.Options_Switch.SetActive(false);
         menu_controller.Options_Router.SetActive(false);
+        button_handler.optionRunning = false;
+        resetMenuIcons();
     }
 }

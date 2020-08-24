@@ -30,6 +30,7 @@ public class button_handler : MonoBehaviour
 
     public static bool allowLines;
     public static bool startRunning;
+    public static bool optionRunning;
 
     public bool createServer;
     public bool createSwitch;
@@ -44,6 +45,7 @@ public class button_handler : MonoBehaviour
         totalRouterNumber = 0;
         allowLines = false;
         startRunning = false;
+        optionRunning = false;
         createServer = false;
         createSwitch = false;
         createRouter = false;
@@ -117,44 +119,57 @@ public class button_handler : MonoBehaviour
 
     public void checkIfKeyPressed()
     {
-        if (Input.GetKeyDown("s"))
+        if (optionRunning == false)
         {
-            OnClickSwitch();
-        }
-        else if (Input.GetKeyDown("w"))
-        {
-            OnClickLines();
-        }
-        else if (Input.GetKeyDown("r"))
-        {
-            OnClickRouter();
-        }
-        else if (Input.GetKeyDown("n"))
-        {
-            OnClickServer();
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            GameObject Linesbutton = GameObject.Find("Lines_Button");
-            GameObject Routerbutton = GameObject.Find("Router_Button");
-            GameObject Switchbutton = GameObject.Find("Switch_Button");
-            GameObject Serverbutton = GameObject.Find("Server_Button");
-            allowLines = false;
-            createServer = false;
-            createSwitch = false;
-            createRouter = false;
-            Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
-            Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
-            Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
-            Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
-        }
-        else if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if(startRunning == false)
+            if (Input.GetKeyDown("w"))
             {
-                OnClickRun();
+                OnClickSwitch();
             }
-            
+            else if (Input.GetKeyDown("c"))
+            {
+                OnClickLines();
+            }
+            else if (Input.GetKeyDown("r"))
+            {
+                OnClickRouter();
+            }
+            else if (Input.GetKeyDown("s"))
+            {
+                OnClickServer();
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                GameObject Linesbutton = GameObject.Find("Lines_Button");
+                GameObject Routerbutton = GameObject.Find("Router_Button");
+                GameObject Switchbutton = GameObject.Find("Switch_Button");
+                GameObject Serverbutton = GameObject.Find("Server_Button");
+                allowLines = false;
+                createServer = false;
+                createSwitch = false;
+                createRouter = false;
+                Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+                Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+                Routerbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+                Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
+            }
+            else if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (startRunning == false)
+                {
+                    OnClickRun();
+                }
+
+            }
+        }
+        else
+        {
+            if (Input.anyKey)
+            {
+                allowLines = false;
+                createServer = false;
+                createSwitch = false;
+                createRouter = false;
+            }
         }
     }
 
@@ -219,7 +234,7 @@ public class button_handler : MonoBehaviour
             createServer = false;
             createSwitch = false;
             createRouter = true;
-            Routerbutton.GetComponent<Image>().color = new Color32(135, 135, 135, 255);
+            Routerbutton.GetComponent<Image>().color = new Color32(20, 20, 20, 255);
             Serverbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
             Switchbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
             Linesbutton.GetComponent<Image>().color = new Color32(255, 255, 225, 255);
@@ -251,10 +266,13 @@ public class button_handler : MonoBehaviour
     {
         createConnection();
         startRunning = true;
-        //string strCmdText;
-        //strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
-        //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
-        //StartCoroutine(readNameFile());
+        string strCmdText;
+        //GameView
+        strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        //GameBuild
+        //strCmdText = "/C ..\\..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+        StartCoroutine(readNameFile());
         StopButton.SetActive(true);
         StartButton.SetActive(false);
     }
@@ -269,7 +287,10 @@ public class button_handler : MonoBehaviour
     public void createConnection()
     {
         createConnectionFile();
-        string path = @".\\test.txt";
+        //GameView
+        //string path = @".\\test.txt";
+        //GameBuild
+        //string path = @"..\\test.txt";
         //using (StreamReader name_file = new StreamReader(path))
         //{
         //
@@ -328,7 +349,10 @@ public class button_handler : MonoBehaviour
             Lines.Add(connection.Item1.name + "- IP = " + IP1 + " => " + connection.Item2.name + "- IP = " + IP2);
         }
 
+        //GameView
         using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:.\\test.txt"))
+        //GameBuild
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\test.txt"))
         {
             foreach (string line in Lines)
             {
@@ -357,44 +381,50 @@ public class button_handler : MonoBehaviour
     {
         string line;
         yield return new WaitForSeconds(5);
+        //GameView
         string path = @"..\\..\\Automate\\Host_Scripts\\locker.txt";
+        //GameBuild
+        //string path = @"..\\..\\..\\Automate\\Host_Scripts\\locker.txt";
         using (StreamReader reader = new StreamReader(path)) { line = reader.ReadLine(); }
         while(line == "closed")
         {
             yield return new WaitForSeconds(2);
             using (StreamReader reader = new StreamReader(path)) { line = reader.ReadLine(); }
         }
-        path = @"..\\..\\Automate\\Host_Scripts\\allMachinesNames.txt";
-        using (StreamReader name_file = new StreamReader(path))
-        {
-            while ((line = name_file.ReadLine()) != null)
-            {
-                if (line.Contains("server"))
-                {
-                    var thisServer = serverObjQueue.Dequeue();
-                    Text thisServerName = thisServer.GetComponentInChildren<Text>();
-                    thisServer.name = line;
-                    thisServerName.text = line;
-                    serverObjQueue.Enqueue(thisServer);
-                }
-                else if (line.Contains("switch"))
-                {
-                    var thisSwitch = switchObjQueue.Dequeue();
-                    Text thisSwitchrName = thisSwitch.GetComponentInChildren<Text>();
-                    thisSwitch.name = line;
-                    thisSwitchrName.text = line;
-                    switchObjQueue.Enqueue(thisSwitch);
-                }
-                else if (line.Contains("router"))
-                {
-                    var thisRouter = routerObjQueue.Dequeue();
-                    Text thisRouterName = thisRouter.GetComponentInChildren<Text>();
-                    thisRouter.name = line;
-                    thisRouterName.text = line;
-                    routerObjQueue.Enqueue(thisRouter);
-                }
-
-            }
-        }
+        //GameView
+        //path = @"..\\..\\Automate\\Host_Scripts\\allMachinesNames.txt";
+        //GameBuild
+        //path = @"..\\..\\..\\Automate\\Host_Scripts\\allMachinesNames.txt";
+        //using (StreamReader name_file = new StreamReader(path))
+        //{
+        //    while ((line = name_file.ReadLine()) != null)
+        //    {
+        //        if (line.Contains("server"))
+        //        {
+        //            var thisServer = serverObjQueue.Dequeue();
+        //            Text thisServerName = thisServer.GetComponentInChildren<Text>();
+        //            thisServer.name = line;
+        //            thisServerName.text = line;
+        //            serverObjQueue.Enqueue(thisServer);
+        //        }
+        //        else if (line.Contains("switch"))
+        //        {
+        //            var thisSwitch = switchObjQueue.Dequeue();
+        //            Text thisSwitchrName = thisSwitch.GetComponentInChildren<Text>();
+        //            thisSwitch.name = line;
+        //            thisSwitchrName.text = line;
+        //            switchObjQueue.Enqueue(thisSwitch);
+        //        }
+        //        else if (line.Contains("router"))
+        //        {
+        //            var thisRouter = routerObjQueue.Dequeue();
+        //            Text thisRouterName = thisRouter.GetComponentInChildren<Text>();
+        //            thisRouter.name = line;
+        //            thisRouterName.text = line;
+        //            routerObjQueue.Enqueue(thisRouter);
+        //        }
+        //
+        //    }
+        //}
     }
 }

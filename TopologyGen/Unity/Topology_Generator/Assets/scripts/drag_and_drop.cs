@@ -20,7 +20,9 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     public List<string> eth = new List<string>();
     public List<GameObject> attatchedText = new List<GameObject>();
     public string OS;
+    public string OSversion;
     public int machineSetup;
+    public List<bool> services = new List<bool>();
 
     public int serverConnectedNumber;
     public int switchConnectedNumber;
@@ -36,21 +38,43 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             Text name = gameObject.GetComponentInChildren<Text>();
             gameObject.name= "Server_" + myUniquelNumber.ToString();
             name.text = " Server_" + myUniquelNumber.ToString();
+
+            OS = optServer_controller.OSOptionsList[0];
+            OSversion = optServer_controller.OSversionOptionsList[0];
+            machineSetup = 1;
+            foreach (string service in optServer_controller.ServicesOptionsList)
+            {
+                services.Add(false);
+            }
         }
         else if (gameObject.tag == "Switch") { 
             myUniquelNumber = (int)button_handler.switchNameQueue.Dequeue();
             Text name = gameObject.GetComponentInChildren<Text>();
             gameObject.name = "Switch_" + myUniquelNumber.ToString();
             name.text = " Switch_" + myUniquelNumber.ToString();
+            
+            OS = optSwitch_controller.OSOptionsList[0];
+            OSversion = optSwitch_controller.OSversionOptionsList[0];
+            machineSetup = 1;
+            foreach (string service in optSwitch_controller.ServicesOptionsList) {
+                services.Add(false);
+            }
         }
         else if (gameObject.tag == "Router") {
             myUniquelNumber = (int)button_handler.routerNameQueue.Dequeue();
             Text name = gameObject.GetComponentInChildren<Text>();
             gameObject.name = "Router_" + myUniquelNumber.ToString();
             name.text = " Router_" + myUniquelNumber.ToString();
+
+            OS = optRouter_controller.OSOptionsList[0];
+            OSversion = optRouter_controller.OSversionOptionsList[0];
+            machineSetup = 1;
+            foreach (string service in optRouter_controller.ServicesOptionsList)
+            {
+                services.Add(false);
+            }
         }
-        OS = "hashicorp/bionic64";
-        machineSetup = 1;
+        
     }
 
     void Start()
@@ -108,11 +132,25 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     {
         if (Input.GetMouseButtonDown(1) && button_handler.startRunning == false)
         {
+            button_handler.optionRunning = true;
             menu_controller.Menu.SetActive(false);
-            if(this.gameObject.tag == "Switch")
+            menu_controller.Options_Switch.SetActive(false);
+            menu_controller.Options_Server.SetActive(false);
+            menu_controller.Options_Router.SetActive(false);
+            if (this.gameObject.tag == "Switch")
             {
                 menu_controller.Options_Switch.SetActive(true);
                 optSwitch_controller.setCurrentSwitch(this.gameObject);
+            }
+            else if (this.gameObject.tag == "Server")
+            {
+                menu_controller.Options_Server.SetActive(true);
+                optServer_controller.setCurrentServer(this.gameObject);
+            }
+            else if (this.gameObject.tag == "Router")
+            {
+                menu_controller.Options_Router.SetActive(true);
+                optRouter_controller.setCurrentRouter(this.gameObject);
             }
         }
     }
@@ -122,7 +160,10 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
        if( button_handler.startRunning == true )
         {
             string strCmdText;
+            //GameView
             strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            //GameBuild
+            //strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
             System.Diagnostics.Process.Start("CMD.exe", strCmdText);
         }
         if (button_handler.allowLines == true )

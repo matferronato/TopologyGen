@@ -10,6 +10,8 @@ TagManager:
   - Text
   - Menu
   - Options_Switch
+  - Options_Server
+  - Options_Router
   layers:
   - Default
   - TransparentFX
