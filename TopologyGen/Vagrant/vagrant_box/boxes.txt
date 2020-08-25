@@ -1,3 +1,4 @@
-Linux Ubuntu
-Hashicorp/Bionic64
+Ubuntu
+Mac
 Windows 10
+Docker

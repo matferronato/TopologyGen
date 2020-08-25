@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
@@ -28,6 +29,8 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     public int serverConnectedNumber;
     public int switchConnectedNumber;
     public int routerConnectedNumber;
+
+    public Tuple<float, float> position = new Tuple<float, float>(0f, 0f);
 
 
     private void Awake()
@@ -119,17 +122,49 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     public void OnDrag(PointerEventData eventData)
     {
         //Debug.Log("OnDrag");
-        if (button_handler.allowLines == false && linked == false)
+        if (button_handler.allowLines == false)
         {
             rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
-        } 
-     }
+        }
+    }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         //Debug.Log("OnEndDrag");
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
+        if (linked == true)
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, line_creation.Zvalue));
+            for (int i = 0; i < connections.Count; i++)
+            {
+                GameObject machineConnected = connections[i];
+                int index = -1;
+                for(int j =0; j < button_handler.connectionsObjList.Count; j++)
+                {
+                    Tuple<GameObject,GameObject> connection = button_handler.connectionsObjList[j];
+                    if (connection.Item1 == gameObject && connection.Item2 == machineConnected)
+                    {
+                        index = j;
+                    }
+                }
+                if (index < 0)
+                {
+                    for (int j = 0; j < button_handler.connectionsObjList.Count; j++)
+                    {
+                        Tuple<GameObject, GameObject> connection = button_handler.connectionsObjList[j];
+                        if (connection.Item1 == machineConnected && connection.Item2 == gameObject)
+                        {
+                            index = j;
+                        }
+                    }
+                }
+                position = Tuple.Create(mousePos.x, mousePos.y);
+                GameObject currentLine = button_handler.lineObjList[index];
+                currentLine.GetComponent<LineRenderer>().SetPosition(0, new Vector3(mousePos.x, mousePos.y, 0f));
+                currentLine.GetComponent<LineRenderer>().SetPosition(1, new Vector3(machineConnected.GetComponent<drag_and_drop>().position.Item1, machineConnected.GetComponent<drag_and_drop>().position.Item2, 0f));
+            }
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -165,9 +200,9 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         {
             string strCmdText;
             //GameView
-            //strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
-            //GameBuild
             strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            //GameBuild
+            //strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
             System.Diagnostics.Process.Start("CMD.exe", strCmdText);
         }
         if (button_handler.allowLines == true )

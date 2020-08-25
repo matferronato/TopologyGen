@@ -1,0 +1,2 @@
+sudo ifconfig eth100 5.5.5.2/24 up
+sudo ifconfig eth50 6.6.6.1/24 up

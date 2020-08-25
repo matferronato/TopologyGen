@@ -1,0 +1,1 @@
+sudo ifconfig eth100 8.8.8.3/24 up

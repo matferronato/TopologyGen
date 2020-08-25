@@ -17,7 +17,7 @@ public class button_handler : MonoBehaviour
     public static Queue<GameObject> serverObjQueue = new Queue<GameObject>();
     public static Queue<GameObject> switchObjQueue = new Queue<GameObject>();
     public static Queue<GameObject> routerObjQueue = new Queue<GameObject>();
-    public static Queue<GameObject> lineObjQueue = new Queue<GameObject>();
+    public static List<GameObject> lineObjList = new List<GameObject>();
     public static List<Tuple<GameObject, GameObject>> connectionsObjList= new List<Tuple<GameObject, GameObject>>();
 
     public static Queue serverNameQueue = new Queue();
@@ -328,8 +328,13 @@ public class button_handler : MonoBehaviour
         for (int i = 0; i < currentTotal; i++) { Destroy(switchObjQueue.Dequeue()); }
         currentTotal = routerObjQueue.Count;
         for (int i = 0; i < currentTotal; i++) { Destroy(routerObjQueue.Dequeue()); }
-        currentTotal = lineObjQueue.Count;
-        for (int i = 0; i < currentTotal; i++) { Destroy(lineObjQueue.Dequeue()); }
+        for (int i = 0; i < lineObjList.Count; i++)
+        {
+            GameObject currentLine = lineObjList[i];
+            Destroy(currentLine);
+        }
+        lineObjList.Clear();
+
     }
 
     public void writeDotFile()
@@ -339,9 +344,9 @@ public class button_handler : MonoBehaviour
         string CreationText = "\"%\" [function=\"leaf\" vagrant=\"eth1\" os=\"!\" version=\"@\" memory=\"(\" config=\"./helper_scripts/config_production_switch.sh\" ]";
         Lines.Add("graph vx {");
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\TopologyInfo\\topology.dot"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\TopologyInfo\\topology.dot"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\TopologyInfo\\topology.dot"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\TopologyInfo\\topology.dot"))
         {
             foreach (GameObject machine in allMachines)
             {
@@ -366,7 +371,8 @@ public class button_handler : MonoBehaviour
             Lines.Add("}");
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
             }
         }
     }
@@ -487,9 +493,9 @@ public class button_handler : MonoBehaviour
     {
         List<string> Lines = new List<string>();
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
         {
             foreach(string thisIp in possibleNetworks)
             {
@@ -498,7 +504,8 @@ public class button_handler : MonoBehaviour
             }
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
             }
         }
     }
@@ -507,9 +514,9 @@ public class button_handler : MonoBehaviour
     {
         List<string> Lines = new List<string>();
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
         {
             foreach (GameObject machine in allMachines)
             {
@@ -517,7 +524,8 @@ public class button_handler : MonoBehaviour
             }
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
             }
         }
     }
@@ -526,9 +534,9 @@ public class button_handler : MonoBehaviour
     {
         List<string> Lines = new List<string>();
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
         {
             foreach (GameObject thisMachine in allMachines)
             {
@@ -542,7 +550,8 @@ public class button_handler : MonoBehaviour
             }
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
             }
         }
     }
@@ -551,9 +560,9 @@ public class button_handler : MonoBehaviour
     {
         List<string> Lines = new List<string>();
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
         {
             foreach (GameObject thisMachine in allMachines)
             {
@@ -597,7 +606,8 @@ public class button_handler : MonoBehaviour
             }
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
             }
         }
     }
@@ -606,9 +616,9 @@ public class button_handler : MonoBehaviour
     {
         List<string> Lines = new List<string>();
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections.txt"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections.txt"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections.txt"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections.txt"))
         {
             foreach (var connection in connectionsObjList)
             {
@@ -616,7 +626,8 @@ public class button_handler : MonoBehaviour
             }
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
             }
         }
     }
@@ -626,9 +637,9 @@ public class button_handler : MonoBehaviour
     {
         List<string> Lines = new List<string>();
         //GameView
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
         //GameBuild
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
+        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
         {
             foreach (var connection in connectionsObjList)
             {
@@ -644,7 +655,9 @@ public class button_handler : MonoBehaviour
             }
             foreach (string line in Lines)
             {
-                file.WriteLine(line);
+                file.Write(line);
+                file.Write("\n");
+
             }
         }
     }
@@ -671,9 +684,9 @@ public class button_handler : MonoBehaviour
         string line;
         yield return new WaitForSeconds(5);
         //GameView
-        //string path = @"..\\..\\Automate\\Host_Scripts\\locker.txt";
+        string path = @"..\\..\\Automate\\Host_Scripts\\locker.txt";
         //GameBuild
-        string path = @"..\\..\\..\\Automate\\Host_Scripts\\locker.txt";
+        //string path = @"..\\..\\..\\Automate\\Host_Scripts\\locker.txt";
         using (StreamReader reader = new StreamReader(path)) { line = reader.ReadLine(); }
         while(line == "closed")
         {

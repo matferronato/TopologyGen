@@ -1,0 +1,1 @@
+sudo ifconfig eth50 7.7.7.3/24 up

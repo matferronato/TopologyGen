@@ -65,28 +65,36 @@ public class line_creation : MonoBehaviour
             Tuple<GameObject, GameObject> thisConnection = new Tuple<GameObject, GameObject>(endPointA, endPointB);
             if (!button_handler.connectionsObjList.Contains(thisConnection) && !button_handler.connectionsObjList.Contains(new Tuple<GameObject, GameObject>(thisConnection.Item2, thisConnection.Item1))) {
                 createTextInterface(endPointA, startMousePos, endPointB, mousePos);
+                mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Zvalue));
                 if (endPointB.name.Contains("Router"))
                 {
                     GameObject aux = endPointB;
                     endPointB = endPointA;
                     endPointA = aux;
+                    Vector2 vectAux = mousePos;
+                    mousePos = startMousePos;
+                    startMousePos = vectAux;
                 }
                 if (endPointA.name.Contains("Server") && endPointB.name.Contains("Switch"))
                 {
                     GameObject aux = endPointB;
                     endPointB = endPointA;
                     endPointA = aux;
+                    Vector2 vectAux = mousePos;
+                    mousePos = startMousePos;
+                    startMousePos = vectAux;
                 }
+                thisConnection = Tuple.Create(endPointA, endPointB);
                 button_handler.connectionsObjList.Add(thisConnection);
 
-                mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Zvalue));
                 var thisLine = Instantiate(defaultLine, new Vector3(0f, 0f, 0f), Quaternion.identity);
+                thisLine.name = "Line_" + endPointA.name + "_" + endPointB.name;
                 var line = thisLine.GetComponent<LineRenderer>();
                 line.SetPosition(0, new Vector3(startMousePos.x, startMousePos.y, 0f));
                 line.SetPosition(1, new Vector3(mousePos.x, mousePos.y, 0f));
-                button_handler.lineObjQueue.Enqueue(thisLine);
-
-
+                button_handler.lineObjList.Add(thisLine);
+                endPointA.GetComponent<drag_and_drop>().position = Tuple.Create(startMousePos.x, startMousePos.y);
+                endPointB.GetComponent<drag_and_drop>().position = Tuple.Create(mousePos.x, mousePos.y);
                 setupConnections(endPointA, endPointB);
             }
 

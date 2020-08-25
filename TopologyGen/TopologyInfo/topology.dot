@@ -1,19 +1,19 @@
 graph vx {
 "Router_0" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Router_1" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router_2" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server_0" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server_1" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server_2" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server_3" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server_4" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Switch_0" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router_1":"eth1" -- "Server_4":"eth100"
-"Router_0":"eth100" -- "Router_1":"eth100"
-"Router_2":"eth1" -- "Server_3":"eth100"
+"Switch_1" [function="leaf" vagrant="eth1" os="Linux Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Router_1":"eth100" -- "Router_0":"eth100"
+"Router_1":"eth50" -- "Switch_1":"swp100"
+"Switch_1":"swp1" -- "Server_3":"eth50"
+"Switch_1":"swp2" -- "Server_2":"eth50"
+"Switch_0":"swp1" -- "Server_1":"eth50"
+"Switch_0":"swp2" -- "Server_0":"eth50"
 "Router_0":"eth50" -- "Switch_0":"swp100"
-"Switch_0":"swp1" -- "Server_0":"eth50"
-"Server_1":"eth50" -- "Switch_0":"swp2"
-"Server_1":"eth100" -- "Router_2":"eth2"
-"Server_2":"eth100" -- "Router_2":"eth3"
+"Router_0":"eth1" -- "Server_4":"eth100"
 }

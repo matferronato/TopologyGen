@@ -78,9 +78,9 @@ public class optSwitch_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        //string path = @"..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        string path = @"..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
         //GameBuild
-        string path = @"..\\..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
@@ -102,9 +102,9 @@ public class optSwitch_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        //string path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
         //GameBuild
-        string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
@@ -120,9 +120,9 @@ public class optSwitch_controller : MonoBehaviour
         List<string> thisList = new List<string> ();
         string line;
         //GameView
-        //string path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
         //GameBuild
-        string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
