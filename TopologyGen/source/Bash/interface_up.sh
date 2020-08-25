@@ -1,14 +1,16 @@
 interface_up(){
   echo -e "${YELLOW}Setting interfaces"${NC}
+  cd ../../Automate/Guest_Scripts/Interface_Information/
   listOfFiles=`ls`
   for eachFile in $listOfFiles; do
   while read line; do
-    thisFile=${eachFile}_setup.txt
+    thisFile=`echo $eachFile | sed 's/.interface/.cnfg/g'`
     ip=`echo $line | awk '{print $2}'`
     interface=`echo $line | awk '{print $3}'`
     echo sudo ifconfig $interface $ip up >> ../$thisFile
   done<$eachFile
   done
+  cd ../../../source/Bash
 }
 
 main() {
