@@ -1,6 +1,5 @@
 FRONT
-
-tela de opção de extras (sw, router, bgp)
+salvar estado atual
 
 BACK
 mudar sh

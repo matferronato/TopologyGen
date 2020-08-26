@@ -1,9 +1,10 @@
 Router_0
 Router_1
+Router_2
+Router_3
+Router_4
 Server_0
 Server_1
 Server_2
-Server_3
-Server_4
 Switch_0
 Switch_1

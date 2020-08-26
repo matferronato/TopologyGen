@@ -1,0 +1,4 @@
+Router_2 4.4.4.1/24 eth100
+Router_2 5.5.5.1/24 eth101
+Router_2 8.8.8.1/24 eth1
+Router_2 9.9.9.2/24 eth102

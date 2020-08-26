@@ -1,1 +1,2 @@
-Server_2 6.6.6.3/24 eth50
+Server_2 2.2.2.3/24 eth50
+Server_2 8.8.8.3/24 eth100

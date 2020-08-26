@@ -4,9 +4,9 @@ declare -A all_functionalities
 source ./source_all.sh
 lock_files
 #create_vagrantfile
-
 create_files
 interface_up
+config_machines
 
 ####GERA LISTA DE MAQUINAS
 #allMachines=`cat ../../Automate/Host_Scripts/ipList.txt | awk '{print $1}' | sort | uniq`

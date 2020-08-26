@@ -622,7 +622,7 @@ public class button_handler : MonoBehaviour
         {
             foreach (var connection in connectionsObjList)
             {
-                Lines.Add(connection.Item1.name + " " + "---" + " " + connection.Item2.name);
+                Lines.Add(connection.Item1.name + " " + connection.Item2.name);
             }
             foreach (string line in Lines)
             {
@@ -651,7 +651,7 @@ public class button_handler : MonoBehaviour
                 string eth2 = connection.Item2.GetComponent<drag_and_drop>().eth[index2];
                 writeCorrectIPInterface(connection.Item1, index1, IP1);
                 writeCorrectIPInterface(connection.Item2, index2, IP2);
-                Lines.Add(connection.Item1.name + " " +IP1 + " " + eth1 + " " + "---" + " " + connection.Item2.name + " " + IP2 + " " + eth2);
+                Lines.Add(connection.Item1.name + " " +IP1 + " " + eth1 + " " + connection.Item2.name + " " + IP2 + " " + eth2);
             }
             foreach (string line in Lines)
             {
