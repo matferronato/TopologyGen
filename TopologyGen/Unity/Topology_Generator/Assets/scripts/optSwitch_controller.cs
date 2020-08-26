@@ -78,10 +78,17 @@ public class optSwitch_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        string path = @"..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        string path = "";
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        }
         //GameBuild
-        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
-        using (StreamReader os_file = new StreamReader(path))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Vagrant\\vagrant_box\\switch_services.txt";
+        }
+            using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
             {
@@ -101,11 +108,18 @@ public class optSwitch_controller : MonoBehaviour
     {
         List<string> thisList = new List<string>();
         string line;
+        string path = "";
         //GameView
-        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        }
         //GameBuild
-        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
-        using (StreamReader os_file = new StreamReader(path))
+        if (menu_controller.OnGameRunning == true)
+        { 
+            path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes_version.txt";
+        }
+            using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)
             {
@@ -120,9 +134,16 @@ public class optSwitch_controller : MonoBehaviour
         List<string> thisList = new List<string> ();
         string line;
         //GameView
-        string path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        string path = "";
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        }
         //GameBuild
-        //string path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Vagrant\\vagrant_box\\boxes.txt";
+        }
         using (StreamReader os_file = new StreamReader(path))
         {
             while ((line = os_file.ReadLine()) != null)

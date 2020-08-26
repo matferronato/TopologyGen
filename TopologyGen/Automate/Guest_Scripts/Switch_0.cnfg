@@ -1,2 +1,0 @@
-sudo ifconfig swp50 0.0.0.0 up
-sudo ifconfig swp1 0.0.0.0 up

@@ -16,6 +16,22 @@ class UpwardTree():
     def returnNode(self, name):
         return self.treeDict[name]
 
+class Family():
+    def __init__(self, name, family):
+        self.myFamily = family
+        self.me = name
+    def getFamily(self):
+        return self.myFamily
+    def getNextSon(self, child):
+        for i in range(0, len(self.myFamily)):
+            if(i == len(self.myFamily)-1):
+                return "None"
+            elif(self.myFamily[i] == child):
+                return self.myFamily[i+1]
+    def getFirstBorn(self):
+        return self.myFamily[0]
+
+
 class Graph():
     def __init__(self):
         self.structure = {}
@@ -88,6 +104,7 @@ class Graph():
         self.structure[name].setConnectionEthbyIndex(connectionEth, index)
 
 def getAllMachineNames():
+    print("creating structure for machine names")
     file = open("../../../Automate/Host_Scripts/all_machines.txt", "r" , newline='\n')
     lines = file.readlines()
     allMachinesList = []
@@ -97,6 +114,7 @@ def getAllMachineNames():
     return allMachinesList
 
 def getAllIpNetworks():
+    print("creating structure for ip networks")
     file = open("../../../Automate/Host_Scripts/all_ips.txt", "r" , newline='\n')
     lines = file.readlines()
     allIpsList = []
@@ -106,6 +124,7 @@ def getAllIpNetworks():
     return allIpsList
 
 def getTypeMachines(allMachines):
+    print("allowing setup for requested machines")
     typeMachines = {}
     listServers = []
     listSwitchs = []
@@ -120,6 +139,7 @@ def getTypeMachines(allMachines):
     return typeMachines
 
 def getMachineTypes(allMachines):
+    print("recoverying machines for setup")
     machineTypes = {}
     listServers = []
     listSwitchs = []
@@ -134,6 +154,7 @@ def getMachineTypes(allMachines):
     return machineTypes
 
 def getIpAndEth(machineTypes):
+    print("recoverying network and intarface information for each machine")
     file = open("../../../Automate/Host_Scripts/ip_info.txt", "r" , newline='\n')
     lines = file.readlines()
     interfaces = {}
@@ -165,6 +186,7 @@ def checkForUserToggleOff(machineTypes,typeOfMachines,allMachines):
                     machineTypes[type].remove(eachMachine)
 
 def getServicesByMachine(machinesByType):
+    print("recoverying service information")
     file = open("../../../Automate/Host_Scripts/machine_info.txt", "r" , newline='\n')
     lines = file.readlines()
     servicesList = {}
@@ -183,6 +205,7 @@ def getServicesByMachine(machinesByType):
     return servicesList
 
 def getMachineByService(serviceByMachine):
+    print("mapping each service for each machine")
     protocol = set()
     for eachMachine in serviceByMachine:
         for eachService in serviceByMachine[eachMachine]:
@@ -199,6 +222,7 @@ def getMachineByService(serviceByMachine):
     return machinesByService
 
 def getAllNodes(machinesByType, interfaceInfo):
+    print("creating topology data struct")
     graph = Graph()
     for eachKey in machinesByType:
         for eachMachine in machinesByType[eachKey]:
@@ -229,6 +253,7 @@ def setupOtherMachineInfo(thisGraph, myName, hisName, hisIP, hisEth, index):
         thisGraph.setNodeConnectionEthbyIndex(myName, hisEth, index)
 
 def linkEdges(thisGraph, allMachines_list):
+    print("linking machine nodes")
     file = open("../../../Automate/Host_Scripts/connections_detailed.txt", "r" , newline='\n')
     lines = file.readlines()
     for line in lines:
@@ -268,22 +293,7 @@ def returnPlan(myTree, localNode):
     return childEth
 
 
-
 def findEth(graph,router,network, blockedEth=None, blockedNode=None):
-    class Family():
-        def __init__(self, name, family):
-            self.myFamily = family
-            self.me = name
-        def getFamily(self):
-            return self.myFamily
-        def getNextSon(self, child):
-            for i in range(0, len(self.myFamily)):
-                if(i == len(self.myFamily)-1):
-                    return "None"
-                elif(self.myFamily[i] == child):
-                    return self.myFamily[i+1]
-        def getFirstBorn(self):
-            return self.myFamily[0]
     myTree = UpwardTree()
     myTree.addNode(router, "null", "None")
     networkName = returnNetworkName(network)
@@ -318,6 +328,7 @@ def findEth(graph,router,network, blockedEth=None, blockedNode=None):
 
 
 def getRouterTables(graph, routers,networks):
+    print("creating routing plan for each router")
     routerNames = {key: {} for key in routers}
     for eachRouter in routers:
         routerTable = {key: [] for key in networks}
@@ -335,6 +346,7 @@ def checkIfItemIsSimilar(list, item):
 
 
 def runRoutesCleanUp(routeTable, graph, routers, networks):
+    print("cleaning up loops")
     for eachRouter in routers:
         print(eachRouter)
         for eachNetwork in networks:
@@ -372,6 +384,7 @@ def main():
     linkEdges(graph, allMachines_list)
     routersRouterTable_dict = getRouterTables(graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
+    print("you're welcome : )")
 
 
 #-----------------------------------------------------

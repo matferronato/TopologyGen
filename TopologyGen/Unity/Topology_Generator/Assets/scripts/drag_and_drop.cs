@@ -198,11 +198,17 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     {
        if( button_handler.startRunning == true )
         {
-            string strCmdText;
+            string strCmdText="";
             //GameView
-            strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            if (menu_controller.OnGameRunning == false)
+            {
+                strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            }
             //GameBuild
-            //strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            if (menu_controller.OnGameRunning == true)
+            {
+                strCmdText = "/C C:\\Users\\matheus_ferronato\\MyProjects\\TCC\\TopologyGen\\TopologyGen\\Windows\\bash.exe";
+            }
             System.Diagnostics.Process.Start("CMD.exe", strCmdText);
         }
         if (button_handler.allowLines == true )

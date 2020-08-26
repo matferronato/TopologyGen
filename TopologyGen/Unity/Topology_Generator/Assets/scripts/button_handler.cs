@@ -296,12 +296,18 @@ public class button_handler : MonoBehaviour
         possibleNetworks.Clear();
         setupTopologyFiles();
         startRunning = true;
-        string strCmdText;
+        string strCmdText ="";
         //GameView
-        //strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        if (menu_controller.OnGameRunning == false)
+        {
+            strCmdText = "/C ..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        }
         //GameBuild
-        //strCmdText = "/C ..\\..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
-        //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+        if (menu_controller.OnGameRunning == true)
+        {
+            strCmdText = "/C ..\\..\\..\\Windows\\bash.exe /mnt/c/Users/matheus_ferronato/MyProjects/TCC/TopologyGen/TopologyGen/create.run --l0 " + totalServerNumber.ToString() + " --l1 " + totalSwitchNumber.ToString() + " --l2 " + totalRouterNumber.ToString();
+        }
+        System.Diagnostics.Process.Start("CMD.exe", strCmdText);
         //StartCoroutine(readNameFile());
         StopButton.SetActive(true);
         StartButton.SetActive(false);
@@ -343,10 +349,18 @@ public class button_handler : MonoBehaviour
         string ConnectionText = "\"!\":\"@\" -- \"$\":\"%\"";
         string CreationText = "\"%\" [function=\"leaf\" vagrant=\"eth1\" os=\"!\" version=\"@\" memory=\"(\" config=\"./helper_scripts/config_production_switch.sh\" ]";
         Lines.Add("graph vx {");
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\TopologyInfo\\topology.dot"))
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"C:..\\..\\TopologyInfo\\topology.dot";
+        }
         //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\TopologyInfo\\topology.dot"))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"C:..\\..\\..\\TopologyInfo\\topology.dot";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
             foreach (GameObject machine in allMachines)
             {
@@ -492,12 +506,20 @@ public class button_handler : MonoBehaviour
     public void writeAllNetworks()
     {
         List<string> Lines = new List<string>();
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
-        //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_ips.txt"))
+        if (menu_controller.OnGameRunning == false)
         {
-            foreach(string thisIp in possibleNetworks)
+            path = @"..\\..\\Automate\\Host_Scripts\\all_ips.txt";
+        }
+        //GameBuild
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Automate\\Host_Scripts\\all_ips.txt";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
+        {
+            foreach (string thisIp in possibleNetworks)
             {
                 string newIP = thisIp.Replace("Y", "0");
                 Lines.Add(newIP);
@@ -513,10 +535,18 @@ public class button_handler : MonoBehaviour
     public void writeAllMachines()
     {
         List<string> Lines = new List<string>();
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Automate\\Host_Scripts\\all_machines.txt";
+        }
         //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\all_machines.txt"))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Automate\\Host_Scripts\\all_machines.txt";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
             foreach (GameObject machine in allMachines)
             {
@@ -533,10 +563,18 @@ public class button_handler : MonoBehaviour
     public void writeDetailedIPInfo()
     {
         List<string> Lines = new List<string>();
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Automate\\Host_Scripts\\ip_info.txt";
+        }
         //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\ip_info.txt"))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Automate\\Host_Scripts\\ip_info.txt";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
             foreach (GameObject thisMachine in allMachines)
             {
@@ -559,10 +597,18 @@ public class button_handler : MonoBehaviour
     public void writeDetailedMachineInfo()
     {
         List<string> Lines = new List<string>();
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Automate\\Host_Scripts\\machine_info.txt";
+        }
         //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\machine_info.txt"))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Automate\\Host_Scripts\\machine_info.txt";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
             foreach (GameObject thisMachine in allMachines)
             {
@@ -615,10 +661,18 @@ public class button_handler : MonoBehaviour
     public void writePairConnections()
     {
         List<string> Lines = new List<string>();
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections.txt"))
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"C:..\\..\\Automate\\Host_Scripts\\connections.txt";
+        }
         //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections.txt"))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"C:..\\..\\Automate\\Host_Scripts\\connections.txt";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
             foreach (var connection in connectionsObjList)
             {
@@ -636,10 +690,18 @@ public class button_handler : MonoBehaviour
     public void writePairConnectionsDetailed()
     {
         List<string> Lines = new List<string>();
+        string path = "";
         //GameView
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Automate\\Host_Scripts\\connections_detailed.txt";
+        }
         //GameBuild
-        //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:..\\..\\..\\Automate\\Host_Scripts\\connections_detailed.txt"))
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Automate\\Host_Scripts\\connections_detailed.txt";
+        }
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
             foreach (var connection in connectionsObjList)
             {
@@ -674,7 +736,8 @@ public class button_handler : MonoBehaviour
         writeDetailedIPInfo();
         writeDetailedMachineInfo();
         writePairConnectionsDetailed();
-        writePairConnections();
+        //StopButton.SetActive(true);
+        //StartButton.SetActive(false);
     }
 
 
@@ -683,10 +746,17 @@ public class button_handler : MonoBehaviour
     {
         string line;
         yield return new WaitForSeconds(5);
+        string path="";
         //GameView
-        string path = @"..\\..\\Automate\\Host_Scripts\\locker.txt";
+        if (menu_controller.OnGameRunning == false)
+        {
+            path = @"..\\..\\Automate\\Host_Scripts\\locker.txt";
+        }
         //GameBuild
-        //string path = @"..\\..\\..\\Automate\\Host_Scripts\\locker.txt";
+        if (menu_controller.OnGameRunning == true)
+        {
+            path = @"..\\..\\..\\Automate\\Host_Scripts\\locker.txt";
+        }
         using (StreamReader reader = new StreamReader(path)) { line = reader.ReadLine(); }
         while(line == "closed")
         {
