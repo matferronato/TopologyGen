@@ -1,3 +1,0 @@
-sudo ifconfig eth1 1.1.1.1/24 up
-sudo ifconfig eth2 2.2.2.1/24 up
-sudo ifconfig eth3 3.3.3.1/24 up

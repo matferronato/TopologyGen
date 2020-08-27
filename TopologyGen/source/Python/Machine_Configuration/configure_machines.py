@@ -306,7 +306,8 @@ def findEth(graph,router,network, blockedEth=None, blockedNode=None):
     fringe.append(thisFamily)
     while(1):
         if len(fringe) == 0 :
-            time.sleep(30)
+            print(network, family.me ,"entrou em null")
+            time.sleep(2)
             return "null_port"
         family = fringe.pop()
         child = family.getFirstBorn()
@@ -317,12 +318,12 @@ def findEth(graph,router,network, blockedEth=None, blockedNode=None):
                 if("Router" in family.me):
                     childFamily = graph.returnNode(child).connections
                     fringe.append(Family(child, childFamily))
-                    connectedIP =  graph.returnNode(family.me).ip[i]
                     myTree.addNode(child, graph.returnNode(family.me).eth[i], family.me)
-                    if(networkName in connectedIP):
-                        return returnPlan(myTree, child)
                 else:
                     killedFamilyMembers[child] = 1
+            connectedIP =  graph.returnNode(family.me).ip[i]
+            if(networkName in connectedIP):
+                return returnPlan(myTree, child)
             child = family.getNextSon(child)
             i=i+1
 
@@ -348,7 +349,6 @@ def checkIfItemIsSimilar(list, item):
 def runRoutesCleanUp(routeTable, graph, routers, networks):
     print("cleaning up loops")
     for eachRouter in routers:
-        print(eachRouter)
         for eachNetwork in networks:
             #print(routeTable[eachRouter][eachNetwork],eachRouter,eachNetwork)
             indexNetworkConnection = graph.returnNode(eachRouter).eth.index(routeTable[eachRouter][eachNetwork])
@@ -361,31 +361,50 @@ def runRoutesCleanUp(routeTable, graph, routers, networks):
                     networkName = returnNetworkName(eachNetwork)
                     indexIP = checkIfItemIsSimilar(graph.returnNode(eachRouter).ip, networkName)
                     if(indexIP == None):
-                        print("old eth", routeTable[eachRouter][eachNetwork])
                         newEth = findEth(graph,eachRouter,eachNetwork, 1, otherMachine)
                         routeTable[eachRouter][eachNetwork] = newEth
-                        print("new eth", newEth)
                         routeTable[eachRouter][eachNetwork]
-                        print(eachNetwork)
-                        print(eachRouter, routeTable[eachRouter][eachNetwork], "via", otherMachine)
-                        print(otherMachine, routeTable[otherMachine][eachNetwork], "via", myMachine)
-        print("")
+
+def writeStaticRoutes(routersRouterTable, routers, networks):
+    print("creating structure for machine names")
+    file = open("../../../Automate/Host_Scripts/static_routes.txt", "w")
+    for eachRouter in routers:
+        file.write(eachRouter+"\n")
+        for eachNetwork in networks:
+            textToPrint = "    " + eachNetwork + " via -> "  + routersRouterTable[eachRouter][eachNetwork]+"\n"
+            file.write(textToPrint)
+
+def getSimplesConnections():
+    print("looking for relevant machine nodes")
+    file = open("../../../Automate/Host_Scripts/connections_detailed.txt", "r" , newline='\n')
+    lines = file.readlines()
+    setOsMachines = set()
+    for line in lines:
+        lineList      = line.split()
+        firstMachine  = lineList[0]
+        secondMachine = lineList[3]
+        setOsMachines.add(firstMachine)
+        setOsMachines.add(secondMachine)
+    return setOsMachines
+
 
 def main():
     allMachines_list = getAllMachineNames()
     allNetworks_list = getAllIpNetworks()
-    typeOfMachines_dict = getTypeMachines(allMachines_list)
-    machinesByType_dict = getMachineTypes(allMachines_list)
+    allMachinesConneted_List = getSimplesConnections()
+    typeOfMachines_dict = getTypeMachines(allMachinesConneted_List)
+    machinesByType_dict = getMachineTypes(allMachinesConneted_List)
     interfaceInfo_dict = getIpAndEth(machinesByType_dict)
-    checkForUserToggleOff(machinesByType_dict,typeOfMachines_dict,allMachines_list)
+    checkForUserToggleOff(machinesByType_dict,typeOfMachines_dict,allMachinesConneted_List)
     serviceByMachine_dict = getServicesByMachine(machinesByType_dict)
     machineByService_dict = getMachineByService(serviceByMachine_dict)
     graph = getAllNodes(machinesByType_dict, interfaceInfo_dict)
-    linkEdges(graph, allMachines_list)
+    linkEdges(graph, allMachinesConneted_List)
     routersRouterTable_dict = getRouterTables(graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
+    runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
+    writeStaticRoutes(routersRouterTable_dict, machinesByType_dict["Routers"],allNetworks_list)
     print("you're welcome : )")
-
 
 #-----------------------------------------------------
 if __name__ == '__main__': # chamada da funcao principal

@@ -1,4 +1,5 @@
 Ubuntu
-Mac
-Windows 10
+Fedora
+Windows10
 Docker
+Android

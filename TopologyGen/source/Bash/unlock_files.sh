@@ -1,7 +1,7 @@
 unlock_files(){
 
 echo -e ${YELLOW}Unlocking files${NC}
-echo open > ./Automate/Host_Scripts/locker.txt
+echo open > ../../Automate/Host_Scripts/locker.txt
 }
 
 main() {

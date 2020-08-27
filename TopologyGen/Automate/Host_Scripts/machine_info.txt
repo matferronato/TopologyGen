@@ -1,4 +1,12 @@
-Router_0 Windows 10 1.1 500MB router=True  vxlan=False bgp=False hostname=False
-Server_0 Ubuntu 1.1 500MB server=True  hostname=False
-Server_1 Ubuntu 1.1 500MB server=False  hostname=False
-Server_2 Ubuntu 1.1 5000MB server=True  hostname=False
+Router_0 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_1 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_2 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_3 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_4 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Server_0 Ubuntu 1.1 500MB server=True  hostname=False http=False
+Server_1 Ubuntu 1.1 500MB server=True  hostname=False http=False
+Server_2 Ubuntu 1.1 500MB server=True  hostname=False http=False
+Server_3 Ubuntu 1.1 500MB server=True  hostname=False http=False
+Server_4 Ubuntu 1.1 500MB server=True  hostname=False http=False
+Server_5 Ubuntu 1.1 500MB server=True  hostname=False http=False
+Switch_0 Ubuntu 1.1 500MB switch=True  vlan=False hostname=False

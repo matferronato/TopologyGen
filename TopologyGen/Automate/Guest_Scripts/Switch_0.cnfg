@@ -1,0 +1,4 @@
+sudo ifconfig swp1 0.0.0.0 up
+sudo ifconfig swp2 0.0.0.0 up
+sudo ifconfig swp3 0.0.0.0 up
+sudo ifconfig swp100 0.0.0.0 up

@@ -83,9 +83,8 @@ public class button_handler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         checkIfKeyPressed();
-        if (Input.mousePosition.x < 558)
+        if (Input.mousePosition.x < MenuPositionX)
         {
             if (createServer == true)
             {
@@ -340,6 +339,7 @@ public class button_handler : MonoBehaviour
             Destroy(currentLine);
         }
         lineObjList.Clear();
+        address_manager.reset();
 
     }
 
@@ -736,8 +736,6 @@ public class button_handler : MonoBehaviour
         writeDetailedIPInfo();
         writeDetailedMachineInfo();
         writePairConnectionsDetailed();
-        //StopButton.SetActive(true);
-        //StartButton.SetActive(false);
     }
 
 

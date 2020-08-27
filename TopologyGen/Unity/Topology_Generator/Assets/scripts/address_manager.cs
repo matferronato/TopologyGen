@@ -21,6 +21,11 @@ public class address_manager : MonoBehaviour
         
     }
 
+    public static void reset()
+    {
+        currentValue = 1;
+    }
+
     public static void AddressManager()
     {
         currentIp = IP.Replace("X", currentValue.ToString());
