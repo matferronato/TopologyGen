@@ -1,3 +1,3 @@
+Router-0 hashicorp/bionic64 1.0.282 500MB router=True  vxlan=False bgp=False hostname=False
 Server-0 hashicorp/bionic64 1.0.282 500MB server=True  hostname=False http=False
 Server-1 hashicorp/bionic64 1.0.282 500MB server=True  hostname=False http=False
-Switch-0 hashicorp/bionic64 1.0.282 500MB switch=True  vlan=False hostname=False

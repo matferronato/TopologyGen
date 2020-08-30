@@ -1,3 +1,2 @@
 hashicorp/bionic64
-infernix/tinycore
 kalilinux/rolling

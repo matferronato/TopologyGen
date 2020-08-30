@@ -11,6 +11,7 @@ source ./interface_up.sh --source-only --justAWindowsError
 source ./unlock_files.sh --source-only --justAWindowsError
 source ./config_machines.sh --source-only --justAWindowsError
 source ./running_vagrant.sh --source-only --justAWindowsError
+source ./apply_configs.sh --source-only --justAWindowsError
 source ../../Automate/User_Scripts/user_script.sh --source-only --justAWindowsError
 
 echo -e ${YELLOW}Running ${BLUE}converter.sh${NC}

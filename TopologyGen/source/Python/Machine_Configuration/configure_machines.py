@@ -402,29 +402,36 @@ def addDefaultGateWayServers(servers, graph):
                     findDefaultGateWay = True
                     network = returnNetworkName(graph.returnNode(eachServer).ip[i]) + "0"
                     interface = graph.returnNode(eachServer).eth[i]
-                    file.write("echo sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
+                    file.write("sudo ip route del 0/0\n")
+                    file.write("sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
                     break
 
-
 def setupSwitchs(switchs, graph):
-    print("seting uo switchs")
+    print("seting up switchs")
     for eachSwitch in switchs:
         file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
-        file.write("echo sudo ip link add name br0 type bridg\n")
-        file.write("echo sudo ip link set dev br0 up\n")
+        file.write("sudo ip link add name br0 type bridge\n")
+        file.write("sudo ip link set dev br0 up\n")
         interfaces = graph.returnNode(eachSwitch).eth
         for eachEth in interfaces:
-            file.write("echo sudo ip link set dev "+eachEth+" master br0\n")
+            file.write("sudo ip link set dev "+eachEth+" master br0\n")
 
-def setupSwitchs(routers, graph):
-    print("seting uo switchs")
-    for eachSwitch in switchs:
-        file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
-        file.write("echo sudo ip link add name br0 type bridg\n")
-        file.write("echo sudo ip link set dev br0 up\n")
-        interfaces = graph.returnNode(eachSwitch).eth
-        for eachEth in interfaces:
-            file.write("echo sudo ip link set dev "+eachEth+" master br0\n")
+def setupRouters(routers, routerTable, graph):
+    print("seting up routers")
+    for eachRouter in routerTable:
+        file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
+        file.write("sudo sysctl -w net.ipv4.ip_forward=1\n")
+        for eachNetwork in routerTable[eachRouter]:
+            otherIPlist = []
+            myEth = routerTable[eachRouter][eachNetwork]
+            indexEth = graph.returnNode(eachRouter).eth.index(myEth)
+            myIP = graph.returnNode(eachRouter).ip[indexEth]
+            otherMachine = graph.returnNode(eachRouter).connections[indexEth]
+            otherIPlist = graph.returnNode(otherMachine).ip
+            otherIPindex = checkIfItemIsSimilar(otherIPlist,returnNetworkName(myIP))
+            if otherIPindex != None:
+                otherIP = graph.returnNode(otherMachine).ip[otherIPindex]
+                file.write("sudo ip route add "+eachNetwork+" via " + otherIP + " dev " + myEth + "\n")
 
 def main():
     allMachines_list = getAllMachineNames()
@@ -445,6 +452,7 @@ def main():
 
     addDefaultGateWayServers(machinesByType_dict["Servers"] , graph)
     setupSwitchs(machinesByType_dict["Switchs"] , graph)
+    setupRouters(machinesByType_dict["Routers"], routersRouterTable_dict, graph)
 
 #-----------------------------------------------------
 if __name__ == '__main__': # chamada da funcao principal
