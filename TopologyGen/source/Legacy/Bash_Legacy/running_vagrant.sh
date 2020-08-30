@@ -1,8 +1,8 @@
 running_vagrant(){
   echo -e ${YELLOW}"Creating machines"${NC}
   cd ./Vagrant
-  vagrant up
-  sleep 20
+  sudo vagrant up --provider=libvirt
+  sleep 2
 }
 
 main() {

@@ -123,6 +123,19 @@ def getAllIpNetworks():
     allIpsList.sort
     return allIpsList
 
+def getSimplesConnections():
+    print("looking for relevant machine nodes")
+    file = open("../../../Automate/Host_Scripts/connections_detailed.txt", "r" , newline='\n')
+    lines = file.readlines()
+    setOsMachines = set()
+    for line in lines:
+        lineList      = line.split()
+        firstMachine  = lineList[0]
+        secondMachine = lineList[3]
+        setOsMachines.add(firstMachine)
+        setOsMachines.add(secondMachine)
+    return setOsMachines
+
 def getTypeMachines(allMachines):
     print("allowing setup for requested machines")
     typeMachines = {}
@@ -374,19 +387,44 @@ def writeStaticRoutes(routersRouterTable, routers, networks):
             textToPrint = "    " + eachNetwork + " via -> "  + routersRouterTable[eachRouter][eachNetwork]+"\n"
             file.write(textToPrint)
 
-def getSimplesConnections():
-    print("looking for relevant machine nodes")
-    file = open("../../../Automate/Host_Scripts/connections_detailed.txt", "r" , newline='\n')
-    lines = file.readlines()
-    setOsMachines = set()
-    for line in lines:
-        lineList      = line.split()
-        firstMachine  = lineList[0]
-        secondMachine = lineList[3]
-        setOsMachines.add(firstMachine)
-        setOsMachines.add(secondMachine)
-    return setOsMachines
+def addDefaultGateWayServers(servers, graph):
+    print("changing servers default gateway")
+    Types = ["Router", "Switch", "Server"]
+    for eachServer in servers:
+        findDefaultGateWay = False
+        file = open("../../../Automate/Guest_Scripts/"+eachServer+".cnfg", "a")
+        connections = graph.returnNode(eachServer).connections
+        for eachType in Types:
+            if(findDefaultGateWay == True):
+                break
+            for i in range(0, len(connections)):
+                if(eachType in connections[i]):
+                    findDefaultGateWay = True
+                    network = returnNetworkName(graph.returnNode(eachServer).ip[i]) + "0"
+                    interface = graph.returnNode(eachServer).eth[i]
+                    file.write("echo sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
+                    break
 
+
+def setupSwitchs(switchs, graph):
+    print("seting uo switchs")
+    for eachSwitch in switchs:
+        file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
+        file.write("echo sudo ip link add name br0 type bridg\n")
+        file.write("echo sudo ip link set dev br0 up\n")
+        interfaces = graph.returnNode(eachSwitch).eth
+        for eachEth in interfaces:
+            file.write("echo sudo ip link set dev "+eachEth+" master br0\n")
+
+def setupSwitchs(routers, graph):
+    print("seting uo switchs")
+    for eachSwitch in switchs:
+        file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
+        file.write("echo sudo ip link add name br0 type bridg\n")
+        file.write("echo sudo ip link set dev br0 up\n")
+        interfaces = graph.returnNode(eachSwitch).eth
+        for eachEth in interfaces:
+            file.write("echo sudo ip link set dev "+eachEth+" master br0\n")
 
 def main():
     allMachines_list = getAllMachineNames()
@@ -404,7 +442,9 @@ def main():
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
     writeStaticRoutes(routersRouterTable_dict, machinesByType_dict["Routers"],allNetworks_list)
-    print("you're welcome : )")
+
+    addDefaultGateWayServers(machinesByType_dict["Servers"] , graph)
+    setupSwitchs(machinesByType_dict["Switchs"] , graph)
 
 #-----------------------------------------------------
 if __name__ == '__main__': # chamada da funcao principal

@@ -8,6 +8,7 @@ create_files
 interface_up
 config_machines
 
+
 ####GERA LISTA DE MAQUINAS
 #allMachines=`cat ../../Automate/Host_Scripts/ipList.txt | awk '{print $1}' | sort | uniq`
 #cd ../../Automate/Guest_Scripts/ && rm -rf *.txt && cd ./Interface_Information/ && rm -rf *
@@ -25,4 +26,5 @@ config_machines
 #running_vagrant
 #apply_configs
 #if [[ $macro == 1 ]]; then run_macro $server $switch $router $oob; fi
+running_vagrant
 unlock_files

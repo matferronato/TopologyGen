@@ -4,7 +4,7 @@ create_vagrantfile(){
   cd ../../ && chmod -R 777 ./
   cd ./source/Python/Dot_to_Vagrantfile
   python3 reader.py ../../../TopologyInfo/topology.dot -p libvirt
-  mv Vagrantfile ../../../Vagrant
+  mv Vagrantfile ../../../Automate
   cd ../../../source/Bash
 }
 

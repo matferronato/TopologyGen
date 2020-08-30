@@ -1,25 +1,7 @@
 graph vx {
-"Router_0" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router_1" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router_2" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router_3" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router_4" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server_0" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server_1" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server_2" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server_3" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server_4" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server_5" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Switch_0" [function="leaf" vagrant="eth1" os="Ubuntu" version="1.1" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Switch_0":"swp1" -- "Server_3":"eth50"
-"Switch_0":"swp2" -- "Server_4":"eth50"
-"Switch_0":"swp3" -- "Server_5":"eth50"
-"Router_3":"eth50" -- "Switch_0":"swp100"
-"Router_4":"eth100" -- "Router_3":"eth100"
-"Router_2":"eth100" -- "Router_4":"eth101"
-"Router_3":"eth101" -- "Router_2":"eth101"
-"Router_2":"eth1" -- "Server_0":"eth100"
-"Router_1":"eth100" -- "Router_2":"eth102"
-"Router_1":"eth1" -- "Server_1":"eth100"
-"Router_1":"eth2" -- "Server_2":"eth100"
+"Server-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Server-1" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Switch-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Switch-0":"swp1" -- "Server-1":"eth50"
+"Switch-0":"swp2" -- "Server-0":"eth50"
 }

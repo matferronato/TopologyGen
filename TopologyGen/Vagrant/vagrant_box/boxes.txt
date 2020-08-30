@@ -1,5 +1,0 @@
-Ubuntu
-Fedora
-Windows10
-Docker
-Android

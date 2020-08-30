@@ -16,15 +16,10 @@ sudo apt-get install virt-manager
 vagrant plugin install vagrant-mutate
 vagrant plugin install vagrant-libvirt
 
+baixar box
+sudo vagrant box add <box name>
 
-instalar no windows o vagrant da mesma versão que WSL
-baixar VirtualBox
-export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
-export PATH="$PATH:/mnt/c/Program Files/Oracle/VirtualBox"
-
-para achar o arquivo .vagrant.d
-export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH="/home/matferronato/"
-
-vagrant precisa ser criado em uma pasta do windows
+transformar box em libvirt
+vagrant mutate <box name> libvirt
 
 hashicorp/bionic64

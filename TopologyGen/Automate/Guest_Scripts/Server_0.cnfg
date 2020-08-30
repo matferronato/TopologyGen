@@ -1,1 +1,0 @@
-sudo ifconfig eth100 5.5.5.3/24 up

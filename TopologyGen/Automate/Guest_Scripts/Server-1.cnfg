@@ -1,0 +1,2 @@
+sudo ifconfig eth50 1.1.1.Y/24 up
+echo sudo ip route add 0/0 via 1.1.1.0 dev eth50
