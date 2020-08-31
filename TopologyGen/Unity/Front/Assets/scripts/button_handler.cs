@@ -470,11 +470,15 @@ public class button_handler : MonoBehaviour
     public void changeDefaultIPIdentificator()
     {
         string defaultIP = "X.X.X.Y/24";
-
-        for(int i = 1; i < address_manager.currentValue; i++)
-        {
-            string currentIP = defaultIP.Replace("X", i.ToString());
-            possibleNetworks.Add(currentIP);
+        if(address_manager.currentValue != 1){
+          for(int i = 1; i < address_manager.currentValue; i++)
+          {
+              string currentIP = defaultIP.Replace("X", i.ToString());
+              possibleNetworks.Add(currentIP);
+          }
+        } else{
+          string currentIP = defaultIP.Replace("X", "1".ToString());
+          possibleNetworks.Add(currentIP);
         }
         foreach(string thisIp in possibleNetworks)
         {

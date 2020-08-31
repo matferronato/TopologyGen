@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class menu_controller : MonoBehaviour
 {
-    public static bool OnGameRunning = false;
+    public static bool OnGameRunning = true;
 
     public GameObject get_Menu;
     public GameObject get_Options_Server;

@@ -2,7 +2,8 @@ running_vagrant(){
   echo -e ${YELLOW}"Creating machines"${NC}
   cd ../../Automate
   vagrant up
-  sleep 3
+  echo -e ${YELLOW}"Vagrant is UP, waiting 10 seconds to apply machine configs"${NC}
+  sleep 10
   cd ../source/Bash/
 
 }

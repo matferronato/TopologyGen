@@ -400,7 +400,7 @@ def addDefaultGateWayServers(servers, graph):
             for i in range(0, len(connections)):
                 if(eachType in connections[i]):
                     findDefaultGateWay = True
-                    network = returnNetworkName(graph.returnNode(eachServer).ip[i]) + "0"
+                    network = returnNetworkName(graph.returnNode(eachServer).ip[i]) + "1"
                     interface = graph.returnNode(eachServer).eth[i]
                     file.write("sudo ip route del 0/0\n")
                     file.write("sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
@@ -430,7 +430,7 @@ def setupRouters(routers, routerTable, graph):
             otherIPlist = graph.returnNode(otherMachine).ip
             otherIPindex = checkIfItemIsSimilar(otherIPlist,returnNetworkName(myIP))
             if otherIPindex != None:
-                otherIP = graph.returnNode(otherMachine).ip[otherIPindex]
+                otherIP = graph.returnNode(otherMachine).ip[otherIPindex].replace("/24","")
                 file.write("sudo ip route add "+eachNetwork+" via " + otherIP + " dev " + myEth + "\n")
 
 def main():
