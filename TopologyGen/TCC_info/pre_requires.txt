@@ -1,0 +1,25 @@
+python 3
+bash 5
+
+pip install
+
+treelib
+pydotplus
+bcolors
+jinja2
+pip3 install markupsafe
+
+instalar vagrant 2.2.9 .deb pelo terminal da WSL e pelo msi no windows
+sudo apt-get install libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev
+sudo apt-get install virt-manager
+
+vagrant plugin install vagrant-mutate
+vagrant plugin install vagrant-libvirt
+
+baixar box
+sudo vagrant box add <box name>
+
+transformar box em libvirt
+vagrant mutate <box name> libvirt
+
+hashicorp/bionic64

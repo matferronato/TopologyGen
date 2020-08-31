@@ -1,0 +1,2 @@
+hashicorp/bionic64
+kalilinux/rolling

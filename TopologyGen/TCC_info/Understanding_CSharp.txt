@@ -1,0 +1,322 @@
+Titulo:
+Objetivo:
+Função:
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+address_manager
+
+Objetivo:
+Gerencia a quantidade de redes, providenciando novo dominio quando necessario
+
+Função:
+AddressManager =>
+Faz o replace da string default X no contexto ip x.x.x.y pelo valor da rede
+e incrementa o valor atual para poder providenciar uma nova rede
+
+provideAddress =>
+chama AddressManager e retorna o ip atual
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+background_color
+
+Objetivo:
+mudar a cor da imagem de fundo de acordo com contexto
+
+Função:
+start =>
+recupera o componente renderer para setar a cor padrão da imagem
+
+update =>
+altera cor da imagem de background de acordo com contexto
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+button_handler
+
+Objetivo:
+Controla os clicks que ocorrem no canvas e que não envolvem o menu de opções nem os itens individuais flutuantes,
+assim como também providencia funções auxiliares para executar as ações requeridas pelos botões
+
+Função:
+Start =>
+zera os valores de maquinas atuais, informa que os botões não estão apertados, assim como desliga botão de stop
+
+update =>
+primeiramente procura se o mouse esta dentro da area no qual se permite criar novas maquinas
+caso sim, procura se o botão de criar servidores foi apertado
+caso sim, ele irá criar um servidor no local apontado pelo mouse, e colocar este servidor uma pilha de servidores
+o processo se repete igual para switchs e roteadores
+
+onClickServer =>
+Recupera os botões de servidores, switchs, roteadores e criação de linhas, para poder fazer um togle entre
+eles, desligando a função dos demais botões e ligando a função de criar servidores.
+
+OnClickSwitch =>
+Mesmo que OnClickServer mas para Switchs
+
+OnClickRouter =>
+Mesmo que OnClickServer mas para Routers
+
+OnClickLines =>
+Mesmo que OnClickServer mas para habilitar a criação de linhas entre um par de maquinas
+
+OnClickRun =>
+Roda a função createConnection, que entre outras coisas, irá organizar os dominios de ip e providenciar um arquivo
+informando conexões das maquinas e informações especificas de cada maquina
+Em seguida, a função roda comandos em bash que permitirão a execução do reader.py, vagrantfile assim como configuração
+das maquinas
+Por fim, existe a troca do botão run para o botão stop, fazendo o togle das suas funcionalidades
+
+OnClickStop =>
+Coloca false na variavel que informa que o programa esta rodando e faz o togle entre os botões de run e stop
+
+createConnection =>
+Roda a função createConnectionFile, que escreve nos arquivos lidos pelo bash, assim como faz o fix dos ipes e
+reescreve os nomes na tela
+
+cleanIPfromSwitchs =>
+Procura todos os switchs, tira eles da fila, e para cada switch muda seu ip para o ip nulo 0.0.0.0
+
+fixIP =>
+Observa se existe pelo menos um roteador na topologia. Caso exista, então pelo menos um dominio de ip foi estabelecido,
+caso não exista, então escreve o primeiro dominio de ip 1.1.1.Y em todas as maquinas servidoras
+
+writeCorrectIPInterface =>
+Procura o texto de cada conexão para o par de maquinas unidas, e altera os valores padrões para os valores finais de
+ip e eth
+
+createConnectionFile =>
+roda a função fixIP e em seguida a função cleanIPfromSwitchs.
+Cria uma lista de linhas a serem adicionadas em um arquivo, e para cada par de maquinas conectadas, encontra o ip
+referente a conexão, entra na função writeCorrectIPInterface
+e depoisescreve no arquivo de conexões
+
+clearAll =>
+deleta todos os itens da fila e reseta os contadores de maquinas
+
+readNameFile =>
+Esta função ocorre em paralelo a função OnClickRun, ela aguarda um arquivo de lock ser escrito pelo bash, simbolizando
+o fim do processo em shell e o fim do setup das maquinas. Em seguida le os arquivos com nomes atualizados e muda os
+nomes das maquinas
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+drag_and_drop
+
+Objetivo:
+Rensposavel por todo gerenciamento de funções que envolvem a movimentação e interação de maquinas instanciadas
+
+Função:
+Awake =>
+faz um get em componentes de transformação do canvasGroup
+Analisa se é servidor, switch ou roteador, para interagir com a variavel correspondente do script button_handler.
+retira da fila de nomes o seu nome(ultimo nome em espera).
+
+Start =>
+recupera a variavel do canvas atual, informa valores referentes as eths
+* conexões entre servidores começam em 1
+* conexões com switchs começam em 50
+* conexões com roteadores começam em 100
+coloca variaveis de contexto atual em false, informando que maquina não foi selecionada nem linkada
+
+Update =>
+analisa posição atual para saber se esta dentro da tela, se não estiver, deleta maquina atual.
+muda cor do icone da maquina quando ela esta selecionada.
+analisa se maquina foi clicada com botão direita, para abrir menu de opções.
+
+OnBeginDrag =>
+Função responsavel pelo que acontece quando maquina começa a ser arrastada(ela muda de cor).
+
+OnDrag =>
+Responsavel por movimentar a maquina quando segurada com botão esquerdo. Isso só ocorrerá se a maquina não estiver
+ligada a outra já, ou caso o modo de criar conexões esteja em andamento.
+
+OnEndDrag =>
+Responsavel pelo comportamento do incone depois de arrastado(ele retorna a cor original).
+
+OnClick() =>
+Responsavel pelo comportamento quando a maquina é clicada com botão esquerdo.
+Caso o contexto atual seja das maquinas estarem com vagrant levantado, então um click na maquina irá rodar vagrant ssh.
+Caso o contexto seja de criação de conexões, um click irá informar que esta máquina foi selecionada, e irá rodar
+a função line_creation.generateLine para gerar a conexão preenchendo as filas de eth, ip e connection, assim como
+instanciar as linhas de conexões.
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+line_creation
+
+Objetivo:
+Responsavel pela criação de conexões entre maquinas, e preencher as filas referentes
+
+Função:
+Start =>
+Define textos padrões asism como prefab da linha com um gameobject preenchido somente com LineRenderer.
+seta uma flag como true informando que é o primeiro item a ser linkado.
+
+Update =>
+atualiza o valor da coordenada Z a ser instanciado de acordo com o que o usuario decidiu em teste.
+
+IsEmpty =>
+Função generica que informa se lista é vazia
+
+generateLine =>
+Responsavel pela criação da conexão entre maquinas, e o gerenciamento de variaveis que essa operação requisita.
+Começa setando um objeto endpoint como o primeiro objeto clicado, e fazendo um togle na flag. Seta a posição inicial
+como o valor x,y do mouse no momento do click.
+No segundo click, é criado o segundo endpoint sendo esse a segunda maquina clicada.
+Todas as variaveis nos objetos A e B referentes a seleção e link são resetadas e a cor delas é retornada ao padrão,
+informando que o processo de linkagem foi encerrado.
+Confere se os endpoints são os mesmos antes de instanciar uma conexão, o que impede conexões das maquinas com elas mesmas.
+Cria um par de objetos referente a conexão, e analisa se esse objeto já esta na lista como ele (objeto A e B), ou invertido
+(objeto B e A), isso impede que a mesma conexão seja inserida duas vezes.
+Caso não seja, chama a função createTextInterface, que instancia um texto proximo a linha, contendo o numero do ip e da eth
+Depois, analisa a ordem dos endpoints. routers vem primeiro que servidores e switchs, e switchs que servidores. se
+endpointA for switch e B for router, existe o swap dos dois. Isso garante menos possibilidades de escolhas na hora de
+setar ips para as maquinas.
+Após isso, existe a adição do par a lista de conexões, a atribuição da posição x,y do mouse para o objeto B, a instanciação
+de uma linha e a mudançã da sua posição para a posição A e B do mouse.
+Por fim, a função setupConnections é chamada e a flag é resetada.
+
+createTextInterface =>
+Responsavel por instanciar um texto proximo a linha referente a nova conexão gerada.
+Inicia gerando variaveis de deslocamento X,Y para objetos B e A, e de acordo com a ordem dos clicks, e posicionamento
+destes atribui valores para estas variaveis.
+Em seguida, instancia o prefab do texto e seta o objeto A como pai deste.
+Altera o nome do gameobject do texto para o nome do pai, junto com a palavra ip, e o numero atual de conexões que existem
+Após atribuir a ligação com o pai, é gerado o deslocamento do texto para ficar de acordo com o ideal.
+A cor do texto é mudada para preto, e o texto padrão com IP X.X.X.X e ethX é gerado.
+Por fim esse texto é adicionado a file de textos do gameobjectA. A posição i na fila é igual a posição i do ip, eth, e
+conexão.
+O mesmo processo se repete para o objetoB.
+
+checkIfNullIp =>
+Faz uma checagem recursiva por ips nulos 0.0.0.0, quando acha este, subtitui pelo ip padrão fornecido como referencia.
+Esta função serve para preencher a tabela de ips a medida que ips novos vão surgindo no grafo.
+
+listDoesNotOnlyContain =>
+Função generica que testa se lista generica não possui valor generico.
+Se possui, retorna false, se não possui retorna true
+
+returnAnyValueExcept =>
+Função que retorna qualquer valor na lista exceto um valor proibido.
+Esta função é util quando é sabido que existe um IP diferente do nulo, mas não se sabe aonde ou qual.
+
+provideEthInterface =>
+Esta função é responsavel por providenciar uma eth final para a ligação de maquinas.
+Portas eth são dadas para routers e servidores enquanto portas de switchs tem a nomenclatura swp.
+Por essa razão, é feito um if para descobrir o tipo de maquina que esta sendo ligada, se é servidor, então é retornada
+a quantidade de servidores conectados a maquina, e em seguida esse numero é incrementado.
+Caso a maquina seja atual seja um switch, é feito a concatenação entre a string swp e o numero atual na variavel currentValue
+se não, o mesmo é feito, mas com a string eth no lugar.
+Esse processo se repete para switchs e routers como maquina conectada, mudando somente que a variavel router começa em 100, e
+a variavel switch começa em 50.
+
+setupConnections =>
+Esta função é responsavel por preencher a lista de conexões de cada maquina para gerar o grafo, assim como atribuir um
+endereço de ip a esta conexão.
+Primeiro é testado de o objeto atual A é um router. Se for, um novo dominio de ip é gerado, já que cada enlace do roteador
+necessita de um dominio proprio de rede. Assim, este novo ip gerado é adicionado a lista de ips junto com a conexão entre maquinas,
+e a função checkIfNullIp é chamada para recursivamente atribuir este ip a switchs e roteadores conectados.
+Caso o objeto A seja um switch, é testado se alguma vez este switch já encontrou um roteador, pois isso garantirá que existe pelo
+menos um item na lista de ips desta maquina com um endereço não nulo. Caso isso seja verdade, este dominio é atribuido a esta conexão.
+Caso contrario, é testado se a maquina A tem algum IP não nulo em sua tabela, com a função listDoesNotOnlyContain, caso sim, este será o
+ip atribuido e a função recursiva checkIfNullIp será chamada.
+Caso não exista para maquina A, então o mesmo processo ocorre para maquina B, analisando se por acaso esta maquina já não se conectou
+com algum dominio de ip.
+Se não, um ip nulo é atribuido.
+O mesmo processo ocorre para quando a máquina A for um servidor.
+por fim, a função provideEthInterface é chamada para o objeto A e para o objeto B.
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+magnetic_dop
+
+Objetivo:
+Responsavel pela ligação magnetica de itens jogados na lixeira.
+Essa classe irá gerenciar itens deletados chamados pela lixeira.
+
+Função:
+OnDrop =>
+Responsavel pelo evento de dropagem de objetos nos arredores do icone.
+Quando esse processo ocorrer para um objeto não nulo, será testado qual a tag que esse objeto carrega.
+Ele irá então adicionar a fila de nomes o nome da maquina deletada, que precisa ser chamada novamente para
+completar a ordenação lógica, e em seguida retirar o objeto a ser deletado da lista de objetos validos.
+Por fim uma flag de deleted será gerada para evitar que o mesmo nome seja gerado duas vezes.
+Esse processo é igual para server, switchs e routers, mudando somente as filas a serem chamadas.
+Por fim o objeto contido no evento é destruido
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+menu_controller
+
+Objetivo:
+Gerencia os objetos a serem ativados e desativados no menu e nas opções.
+
+Função:
+Start =>
+Atraves dos GameObjects setados no editor, é atribuido referencias publicas a estes.
+
+#############################################
+#############################################
+#############################################
+
+Titulo:
+simple_drag
+
+Objetivo:
+Versão simplificada do script de gerencia de objetos instanciados, este script somente gerencia
+os textos que são criados nas ligações, permitindo que eles sejam movidos caso sejam instanciados em posições desfavoraveis.
+
+Função:
+Awake =>
+Faz um get do canvasGroup
+
+Start =>
+Encontra a canvas atual.
+
+OnBeginDrag =>
+Quando inicia o processo de arrasto do texto, essa função muda o alpha do texto.
+Isso contudo só é possivel quando o script de criação de linhas não estiver rodando.
+
+OnDrag =>
+Arrasta o texto junto ao mouse, mas somente quando o script de criação de linhas não estiver rodando.
+
+OnEndDrag =>
+Retorna o alpha original quando o processo de arrasto acabar.
+Tambem somente quando o processo de criação de linhas não estiver ativado.
+
+#############################################
+#############################################
+#############################################
+
+
+Titulo:
+Objetivo:
+Função:
+
+#############################################
+#############################################
+#############################################

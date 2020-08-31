@@ -1,0 +1,7 @@
+Router_0 Ubuntu 1.1 1275MB router=True  vxlan=False bgp=True hostname=False
+Router_1 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Router_2 Ubuntu 1.1 500MB router=True  vxlan=False bgp=False hostname=False
+Server_0 Ubuntu 1.1 500MB server=True  hostname=False
+Server_1 Ubuntu 1.1 500MB server=True  hostname=False
+Server_2 Ubuntu 1.1 500MB server=True  hostname=False
+Switch_0 Ubuntu 1.1 500MB switch=True  vlan=False hostname=False
