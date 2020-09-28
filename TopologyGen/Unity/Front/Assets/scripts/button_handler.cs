@@ -67,6 +67,14 @@ public class button_handler : MonoBehaviour
             leftBoundary = 0.2f;
             rightBoundary = 56f;
         }
+        else if (x == 1920 && y == 1080)
+        {
+            MenuPositionX = 1330.0f;
+            upperBoundary = 1070.0f;
+            bottomBoundary = 64.0f;
+            leftBoundary = 74.0f;
+            rightBoundary = 1919.0f;
+        }
     }
 
     void Start()

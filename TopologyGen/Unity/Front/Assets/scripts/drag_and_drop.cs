@@ -102,10 +102,11 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
     {
         var viewPortPos = Camera.main.WorldToViewportPoint(transform.position);
         //Debug.Log(viewPortPos);
-        if (viewPortPos.y < button_handler.bottomBoundary || viewPortPos.x < button_handler.leftBoundary || viewPortPos.y > button_handler.upperBoundary || viewPortPos.x > button_handler.rightBoundary)
-        {
-            UnityEngine.Object.Destroy(gameObject);
-        }
+        //if (viewPortPos.y < button_handler.bottomBoundary || viewPortPos.x < button_handler.leftBoundary || viewPortPos.y > button_handler.upperBoundary || viewPortPos.x > button_handler.rightBoundary)
+        //if (Input.mousePosition.y < button_handler.bottomBoundary || Input.mousePosition.x < button_handler.leftBoundary || Input.mousePosition.y > button_handler.upperBoundary || Input.mousePosition.x > button_handler.rightBoundary)
+        //{
+        //    UnityEngine.Object.Destroy(gameObject);
+        //}
         if (selected == true)
         {
             canvasGroup.alpha = .2f;

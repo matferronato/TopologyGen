@@ -13,6 +13,7 @@ ScriptsOnlyBuild:
     - optSwitch_controller
     - rename_icon
     - simple_drag
+    - teste_to_discart
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.TestRunner.dll:
@@ -66,59 +67,61 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11696}
+      Script: {instanceID: 11784}
     - Class: 114
-      Script: {instanceID: 11698}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 11720}
+      Script: {instanceID: 11808}
     - Class: 114
-      Script: {instanceID: 11760}
+      Script: {instanceID: 11848}
     - Class: 114
-      Script: {instanceID: 11804}
+      Script: {instanceID: 11892}
     - Class: 114
-      Script: {instanceID: 11904}
+      Script: {instanceID: 11992}
     - Class: 114
-      Script: {instanceID: 11942}
+      Script: {instanceID: 12030}
     - Class: 114
-      Script: {instanceID: 11948}
+      Script: {instanceID: 12036}
     - Class: 114
-      Script: {instanceID: 12032}
+      Script: {instanceID: 12120}
     - Class: 114
-      Script: {instanceID: 12240}
+      Script: {instanceID: 12328}
     - Class: 114
-      Script: {instanceID: 12284}
+      Script: {instanceID: 12372}
     - Class: 114
-      Script: {instanceID: 12298}
+      Script: {instanceID: 12386}
     - Class: 114
-      Script: {instanceID: 12384}
+      Script: {instanceID: 12472}
     - Class: 114
-      Script: {instanceID: 12610}
+      Script: {instanceID: 12698}
     - Class: 114
-      Script: {instanceID: 12836}
+      Script: {instanceID: 12752}
     - Class: 114
-      Script: {instanceID: 12940}
+      Script: {instanceID: 12926}
     - Class: 114
-      Script: {instanceID: 13058}
+      Script: {instanceID: 13030}
     - Class: 114
-      Script: {instanceID: 13308}
+      Script: {instanceID: 13148}
     - Class: 114
-      Script: {instanceID: 13380}
+      Script: {instanceID: 13398}
     - Class: 114
-      Script: {instanceID: 13386}
+      Script: {instanceID: 13470}
     - Class: 114
-      Script: {instanceID: 13652}
+      Script: {instanceID: 13476}
     - Class: 114
-      Script: {instanceID: 13698}
+      Script: {instanceID: 13742}
     - Class: 114
-      Script: {instanceID: 13728}
+      Script: {instanceID: 13788}
     - Class: 114
-      Script: {instanceID: 13754}
+      Script: {instanceID: 13818}
     - Class: 114
-      Script: {instanceID: 13768}
+      Script: {instanceID: 13844}
     - Class: 114
-      Script: {instanceID: 13786}
+      Script: {instanceID: 13858}
     - Class: 114
-      Script: {instanceID: 13804}
+      Script: {instanceID: 13876}
+    - Class: 114
+      Script: {instanceID: 13894}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 120
@@ -399,6 +402,12 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: teste_to_discart
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_SpriteAnimator
@@ -645,4 +654,4 @@ ScriptsOnlyBuild:
   platform: 24
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: /home/matferronato/Coding/TCC/TopologyGen/TopologyGen/Unity/Front/Run_App/TopologyGenerator.x86_64
+  playerPath: /home/matferronato/Code/TCC/TopologyGen/TopologyGen/Unity/Front/Run_App/TopologyGenerator.x86_64

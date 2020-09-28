@@ -406,15 +406,40 @@ def addDefaultGateWayServers(servers, graph):
                     file.write("sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
                     break
 
-def setupSwitchs(switchs, graph):
+def setupSwitchs(switchs, serviceByMachine_dict, graph):
     print("seting up switchs")
     for eachSwitch in switchs:
-        file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
-        file.write("sudo ip link add name br0 type bridge\n")
-        file.write("sudo ip link set dev br0 up\n")
-        interfaces = graph.returnNode(eachSwitch).eth
-        for eachEth in interfaces:
-            file.write("sudo ip link set dev "+eachEth+" master br0\n")
+        if "vlan=True" in serviceByMachine_dict[eachSwitch]:
+            file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
+            interfaces = list(graph.returnNode(eachSwitch).eth)
+            trunk = ""
+            if "swp50" in interfaces:
+                index = interfaces.index("swp50")
+                interfaces.pop(index)
+                trunk = "swp50"
+                for eachVlan in range(0,2):
+                    file.write("sudo ip link add name br"+str(eachVlan)+" type bridge\n")
+                    file.write("sudo ip link set dev br"+str(eachVlan)+" up\n")
+                    file.write("sudo ip link add link "+trunk+" name "+trunk+"."+str((eachVlan+1)*100)+" type vlan id "+str((eachVlan+1)*100)+"\n")
+                    file.write("sudo ip link set dev "+trunk+"."+str((eachVlan+1)*100)+" up\n")
+                    file.write("sudo ip link set dev "+trunk+"."+str((eachVlan+1)*100)+" master br"+str(eachVlan)+"\n")
+            else:
+                for eachVlan in range(0,2):
+                    file.write("sudo ip link add name br"+str(eachVlan)+" type bridge\n")
+            for index, eachInterface in enumerate(interfaces):
+                if index < len(eachInterface)/2:
+                    file.write("sudo ip link set dev "+eachInterface+" master br0\n")
+                else:
+                    file.write("sudo ip link set dev "+eachInterface+" master br1\n")
+        else:
+            file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
+            file.write("sudo ip link add name br0 type bridge\n")
+            file.write("sudo ip link set dev br0 up\n")
+            interfaces = graph.returnNode(eachSwitch).eth
+            for eachEth in interfaces:
+                file.write("sudo ip link set dev "+eachEth+" master br0\n")
+
+
 
 def setupRouters(routers, routerTable, graph):
     print("seting up routers")
@@ -433,6 +458,57 @@ def setupRouters(routers, routerTable, graph):
                 otherIP = graph.returnNode(otherMachine).ip[otherIPindex].replace("/24","")
                 file.write("sudo ip route add "+eachNetwork+" via " + otherIP + " dev " + myEth + "\n")
 
+def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
+    print("applying Vxlan")
+    vxlanNetworkInterfaces = []
+    for eachRouter in routerTable:
+        if "vxlan=True" in serviceByMachine_dict[eachRouter]:
+            file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
+
+            indexEth = graph.returnNode(eachRouter).eth.index("eth100")
+            network = graph.returnNode(eachRouter).ip[indexEth]
+            otherMachine = graph.returnNode(eachRouter).connections[indexEth]
+            indexIP = checkIfItemIsSimilar(graph.returnNode(otherMachine).ip, returnNetworkName(network))
+            ip = graph.returnNode(otherMachine).ip[indexIP]
+            file.write("sudo ip route del 0/0\n")
+            file.write("sudo ip route add 0/0 via " + ip.replace("/24","") + " dev eth100 \n")
+
+            file.write("sudo ip link add br0 type bridge\n")
+            file.write("sudo ip link set br0 up\n")
+            file.write("sudo ip link add name vxlan10 type vxlan id 10 dev eth100 group 239.1.1.1 dstport 4789\n")
+            interfaces = list(graph.returnNode(eachRouter).eth)
+            if "eth50" in interfaces:
+                file.write("sudo ip link set dev eth50 master br0\n")
+                indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth50")
+            else:
+                file.write("sudo ip link set dev eth1 master br0\n")
+                indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth1")
+            ipNetwork = graph.returnNode(eachRouter).ip[indexNetworkConnection]
+            vxlanNetworkInterfaces.append(ipNetwork)
+            file.write("sudo ip link set dev vxlan10 master br0\n")
+            file.write("sudo ip link set vxlan10 up\n")
+    return vxlanNetworkInterfaces
+
+                    #network = returnNetworkName(graph.returnNode(eachServer).ip[i]) + "1"
+                    #interface = graph.returnNode(eachServer).eth[i]
+                    #file.write("sudo ip route del 0/0\n")
+                    #file.write("sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
+
+
+def applyVxlanServers(servers, serviceByMachine_dict, vxlanNetworkInterfaces, graph):
+    print("applying Vxlan")
+    j = 1
+    for i, eachServer in enumerate(servers):
+        if "vxlanIp=True" in serviceByMachine_dict[eachServer]:
+            file = open("../../../Automate/Guest_Scripts/"+eachServer+".cnfg", "a")
+            networks = list(graph.returnNode(eachServer).ip)
+            for index, eachNetwork in enumerate(networks):
+                networkName = returnNetworkName(eachNetwork)
+                if checkIfItemIsSimilar(vxlanNetworkInterfaces, networkName) != None:
+                    correctEth =  graph.returnNode(eachServer).eth[index]
+                    file.write("sudo ip addr add 100.100.100."+str(j)+"/24 dev "+correctEth+"\n")
+                    j=j+1
+
 def main():
     allMachines_list = getAllMachineNames()
     allNetworks_list = getAllIpNetworks()
@@ -448,11 +524,13 @@ def main():
     routersRouterTable_dict = getRouterTables(graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
-    writeStaticRoutes(routersRouterTable_dict, machinesByType_dict["Routers"],allNetworks_list)
+    #writeStaticRoutes(routersRouterTable_dict, machinesByType_dict["Routers"],allNetworks_list)
 
     addDefaultGateWayServers(machinesByType_dict["Servers"] , graph)
-    setupSwitchs(machinesByType_dict["Switchs"] , graph)
+    setupSwitchs(machinesByType_dict["Switchs"], serviceByMachine_dict, graph)
     setupRouters(machinesByType_dict["Routers"], routersRouterTable_dict, graph)
+    vxlanNetworkInterfaces = applyVxlanRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
+    applyVxlanServers(machinesByType_dict["Servers"], serviceByMachine_dict, vxlanNetworkInterfaces, graph)
 
 #-----------------------------------------------------
 if __name__ == '__main__': # chamada da funcao principal
