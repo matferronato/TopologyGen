@@ -66,7 +66,8 @@ public class optRouter_controller : MonoBehaviour
             thisCheckBox.name = "checkBox" + i.ToString();
             thisCheckBox.GetComponentInChildren<Text>().text = service;
             thisCheckBox.isOn = false;
-            thisCheckBox.transform.position = new Vector2(thisCheckBox.transform.position.x, thisCheckBox.transform.position.y - (i * 20));
+            thisCheckBox.transform.position = new Vector2(thisCheckBox.transform.position.x, thisCheckBox.transform.position.y - (i * 32));
+            thisCheckBox.transform.localScale = new Vector3(0.75f,0.75f,0);
             thisCheckBox.onValueChanged.AddListener((bool toggled) => { each_checkbox_handler.toggleService(toggled ? true : false, thisCheckBox.name, chekBoxContainer.name); });
             CheckBoxObjectList.Add(thisCheckBox);
             BoolServiceList.Add(false);

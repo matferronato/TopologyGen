@@ -489,12 +489,6 @@ def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
             file.write("sudo ip link set vxlan10 up\n")
     return vxlanNetworkInterfaces
 
-                    #network = returnNetworkName(graph.returnNode(eachServer).ip[i]) + "1"
-                    #interface = graph.returnNode(eachServer).eth[i]
-                    #file.write("sudo ip route del 0/0\n")
-                    #file.write("sudo ip route add 0/0 via " + network + " dev " +  interface + "\n")
-
-
 def applyVxlanServers(servers, serviceByMachine_dict, vxlanNetworkInterfaces, graph):
     print("applying Vxlan")
     j = 1
@@ -524,13 +518,15 @@ def main():
     routersRouterTable_dict = getRouterTables(graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
     runRoutesCleanUp(routersRouterTable_dict, graph, machinesByType_dict["Routers"],allNetworks_list)
-    #writeStaticRoutes(routersRouterTable_dict, machinesByType_dict["Routers"],allNetworks_list)
+    writeStaticRoutes(routersRouterTable_dict, machinesByType_dict["Routers"],allNetworks_list)
 
     addDefaultGateWayServers(machinesByType_dict["Servers"] , graph)
     setupSwitchs(machinesByType_dict["Switchs"], serviceByMachine_dict, graph)
     setupRouters(machinesByType_dict["Routers"], routersRouterTable_dict, graph)
     vxlanNetworkInterfaces = applyVxlanRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
     applyVxlanServers(machinesByType_dict["Servers"], serviceByMachine_dict, vxlanNetworkInterfaces, graph)
+
+    print()
 
 #-----------------------------------------------------
 if __name__ == '__main__': # chamada da funcao principal
