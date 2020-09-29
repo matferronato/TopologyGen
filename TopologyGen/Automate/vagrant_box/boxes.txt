@@ -1,2 +1,2 @@
 hashicorp/bionic64
-kalilinux/rolling
+exnav29/lxle

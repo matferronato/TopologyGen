@@ -23,3 +23,7 @@ transformar box em libvirt
 vagrant mutate <box name> libvirt
 
 hashicorp/bionic64
+
+
+
+vagrant box remove olbat/tiny-core-micro --provider virtualbox

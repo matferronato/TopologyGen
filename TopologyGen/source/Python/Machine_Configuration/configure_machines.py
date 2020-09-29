@@ -465,6 +465,7 @@ def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
         if "vxlan=True" in serviceByMachine_dict[eachRouter]:
             file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
 
+            #creates default gateway to send vxlan ip package
             indexEth = graph.returnNode(eachRouter).eth.index("eth100")
             network = graph.returnNode(eachRouter).ip[indexEth]
             otherMachine = graph.returnNode(eachRouter).connections[indexEth]
@@ -476,13 +477,22 @@ def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
             file.write("sudo ip link add br0 type bridge\n")
             file.write("sudo ip link set br0 up\n")
             file.write("sudo ip link add name vxlan10 type vxlan id 10 dev eth100 group 239.1.1.1 dstport 4789\n")
+
+            correctEth = ""
             interfaces = list(graph.returnNode(eachRouter).eth)
-            if "eth50" in interfaces:
-                file.write("sudo ip link set dev eth50 master br0\n")
-                indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth50")
+            connections = graph.returnNode(eachRouter).connections
+            for i, eachMachine in enumerate(connections):
+                if "Server" in eachMachine:
+                    if "vxlanIp=True" in serviceByMachine_dict[eachMachine]:
+                        correctEth = graph.returnNode(eachRouter).eth[i]
+
+            if correctEth == "":
+                if "eth50" in interfaces:
+                    file.write("sudo ip link set dev eth50 master br0\n")
+                    indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth50")
             else:
-                file.write("sudo ip link set dev eth1 master br0\n")
-                indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth1")
+                file.write("sudo ip link set dev "+correctEth+" master br0\n")
+                indexNetworkConnection = graph.returnNode(eachRouter).eth.index(correctEth)
             ipNetwork = graph.returnNode(eachRouter).ip[indexNetworkConnection]
             vxlanNetworkInterfaces.append(ipNetwork)
             file.write("sudo ip link set dev vxlan10 master br0\n")

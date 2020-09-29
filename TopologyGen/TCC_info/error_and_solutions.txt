@@ -1,0 +1,11 @@
+The configured shell (config.ssh.shell) is invalid and unable
+to properly execute commands. The most common cause for this is
+using a shell that is unavailable on the system. Please verify
+you're using the full path to the shell and that the shell is
+executable by the SSH user.
+
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "dfly"
+    config.ssh.shell = 'sh'
+end
