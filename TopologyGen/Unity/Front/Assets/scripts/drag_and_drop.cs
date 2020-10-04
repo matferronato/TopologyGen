@@ -48,7 +48,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             OS = optServer_controller.OSOptionsList[0];
             OSversion = optServer_controller.OSversionOptionsList[0];
             machineSetup = 1;
-            memory = 500;
+            memory = 1;
             foreach (string service in optServer_controller.ServicesOptionsList)
             {
                 services.Add(false);
@@ -63,7 +63,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             OS = optSwitch_controller.OSOptionsList[0];
             OSversion = optSwitch_controller.OSversionOptionsList[0];
             machineSetup = 1;
-            memory = 500;
+            memory = 1;
             foreach (string service in optSwitch_controller.ServicesOptionsList) {
                 services.Add(false);
             }
@@ -77,7 +77,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
             OS = optRouter_controller.OSOptionsList[0];
             OSversion = optRouter_controller.OSversionOptionsList[0];
             machineSetup = 1;
-            memory = 500;
+            memory = 1;
             foreach (string service in optRouter_controller.ServicesOptionsList)
             {
                 services.Add(false);

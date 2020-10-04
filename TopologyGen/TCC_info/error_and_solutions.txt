@@ -9,3 +9,18 @@ Vagrant.configure("2") do |config|
     config.vm.box = "dfly"
     config.ssh.shell = 'sh'
 end
+
+
+
+
+
+
+#      device.vm.provision :shell , :inline => <<-vagrant_interface_rule
+#echo "  INFO: Adding UDEV Rule: Vagrant interface = eth1"
+#echo 'ACTION=="add", SUBSYSTEM=="net", ATTR{ifindex}=="2", NAME="eth1", SUBSYSTEMS=="pci"' >> /etc/udev/rules.d/70-persistent-net.rules
+#echo "#### UDEV Rules (/etc/udev/rules.d/70-persistent-net.rules) ####"
+#cat /etc/udev/rules.d/70-persistent-net.rules
+#vagrant_interface_rule
+
+# Run Any Platform Specific Code and Apply the interface Re-map
+#   (may or may not perform a reboot depending on platform)

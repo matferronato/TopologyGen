@@ -52,7 +52,7 @@ public class optServer_controller : MonoBehaviour
     void Update()
     {
         Text sliderText = thisSlider.GetComponentInChildren<Text>();
-        sliderText.text = "Memory use: " + thisSlider.value + " MB";
+        sliderText.text = "Memory use: " + ((int)thisSlider.value * 500).ToString() + " MB";
     }
 
     public void PopulateCheckBox(List<string> list)

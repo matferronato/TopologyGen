@@ -1,6 +1,9 @@
-sudo ifconfig swp100 0.0.0.0 up
-sudo ifconfig swp1 0.0.0.0 up
-sudo ifconfig swp2 0.0.0.0 up
+sudo ip addr add 0.0.0.0 dev swp100
+sudo ip link set swp100 up
+sudo ip addr add 0.0.0.0 dev swp1
+sudo ip link set swp1 up
+sudo ip addr add 0.0.0.0 dev swp2
+sudo ip link set swp2 up
 sudo ip link add name br0 type bridge
 sudo ip link set dev br0 up
 sudo ip link set dev swp100 master br0

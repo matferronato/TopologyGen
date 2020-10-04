@@ -411,7 +411,7 @@ public class button_handler : MonoBehaviour
                 string currentOS = machine.GetComponent<drag_and_drop>().OS;
                 string currentOSversion = machine.GetComponent<drag_and_drop>().OSversion;
                 string currentMemory = machine.GetComponent<drag_and_drop>().memory.ToString();
-                currentStringCreation = currentStringCreation.Replace("%", currentName).Replace("!", currentOS).Replace("@", currentOSversion).Replace("(", currentMemory);
+                currentStringCreation = currentStringCreation.Replace("%", currentName).Replace("!", currentOS).Replace("@", currentOSversion).Replace("(", (Int16.Parse(currentMemory)*500).ToString());
                 Lines.Add(currentStringCreation);
             }
             foreach (var connection in connectionsObjList)
