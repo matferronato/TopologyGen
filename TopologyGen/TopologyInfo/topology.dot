@@ -1,11 +1,9 @@
 graph vx {
-"Router-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server-0" [function="leaf" vagrant="eth1" os="centos/7" version="2004.01" memory="10000" config="./helper_scripts/config_production_switch.sh" ]
+"Server-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-1" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Server-2" [function="leaf" vagrant="eth1" os="exnav29/lxle" version="1.0.0" memory="2000" config="./helper_scripts/config_production_switch.sh" ]
 "Switch-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router-0":"eth1" -- "Server-2":"eth100"
-"Router-0":"eth50" -- "Switch-0":"swp100"
+"Switch-1" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Switch-1":"swp1" -- "Server-0":"eth50"
 "Switch-0":"swp1" -- "Server-1":"eth50"
-"Switch-0":"swp2" -- "Server-0":"eth50"
+"Switch-0":"swp50" -- "Switch-1":"swp50"
 }

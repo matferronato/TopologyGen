@@ -79,22 +79,37 @@ public class optSwitch_controller : MonoBehaviour
         List<string> thisList = new List<string>();
         string line;
         //GameView
-        string path = "";
+        string path_custom = "";
+        string path_standart="";
         if (menu_controller.OnGameRunning == false)
         {
-            path = @"../../Automate/vagrant_box/switch_services.txt";
+            path_standart = @"../../Automate/vagrant_box/switch_services.txt";
+            path_custom = @"../../Automate/User_Scripts/Python_Services/";
         }
         //GameBuild
         if (menu_controller.OnGameRunning == true)
         {
-            path = @"../../../Automate/vagrant_box/switch_services.txt";
+          path_standart = @"../../../Automate/vagrant_box/switch_services.txt";
+          path_custom = @"../../../Automate/User_Scripts/Python_Services/";
         }
-            using (StreamReader os_file = new StreamReader(path))
+            using (StreamReader os_file = new StreamReader(path_standart))
         {
             while ((line = os_file.ReadLine()) != null)
             {
                 thisList.Add(line);
             }
+        }
+        DirectoryInfo dir = new DirectoryInfo(path_custom);
+        FileInfo[] Files = dir.GetFiles("*.py");
+        string str = "";
+        foreach(FileInfo file in Files )
+        {
+          if(file.Name.Contains("Server")){
+            thisList.Add(file.Name.Replace("Server_", "").Replace(".py", ""));
+          }
+          if(file.Name.Contains("All")){
+            thisList.Add(file.Name.Replace("All_", "").Replace(".py", ""));
+          }
         }
         return thisList;
     }

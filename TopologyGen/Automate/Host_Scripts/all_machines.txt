@@ -1,5 +1,4 @@
-Router-0
 Server-0
 Server-1
-Server-2
 Switch-0
+Switch-1

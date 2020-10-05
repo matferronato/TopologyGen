@@ -1,3 +1,2 @@
-hostname
 vxlan
 bgp

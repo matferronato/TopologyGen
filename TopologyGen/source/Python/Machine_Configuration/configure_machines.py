@@ -1,5 +1,8 @@
 import os
 import time
+import shutil
+from user_main import run
+
 
 class UpwardTree():
     def __init__(self):
@@ -441,22 +444,94 @@ def setupSwitchs(switchs, serviceByMachine_dict, graph):
 
 
 
-def setupRouters(routers, routerTable, graph):
+def setupRouters(routers, routerTable, serviceByMachine_dict, graph):
     print("seting up routers")
     for eachRouter in routerTable:
         file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
         file.write("sudo sysctl -w net.ipv4.ip_forward=1\n")
-        for eachNetwork in routerTable[eachRouter]:
-            otherIPlist = []
-            myEth = routerTable[eachRouter][eachNetwork]
-            indexEth = graph.returnNode(eachRouter).eth.index(myEth)
-            myIP = graph.returnNode(eachRouter).ip[indexEth]
-            otherMachine = graph.returnNode(eachRouter).connections[indexEth]
-            otherIPlist = graph.returnNode(otherMachine).ip
-            otherIPindex = checkIfItemIsSimilar(otherIPlist,returnNetworkName(myIP))
-            if otherIPindex != None:
-                otherIP = graph.returnNode(otherMachine).ip[otherIPindex].replace("/24","")
-                file.write("sudo ip route add "+eachNetwork+" via " + otherIP + " dev " + myEth + "\n")
+        if "bgp=True" in serviceByMachine_dict[eachRouter]:
+            applyBgp(eachRouter, file, graph)
+        else:
+            for eachNetwork in routerTable[eachRouter]:
+                otherIPlist = []
+                myEth = routerTable[eachRouter][eachNetwork]
+                indexEth = graph.returnNode(eachRouter).eth.index(myEth)
+                myIP = graph.returnNode(eachRouter).ip[indexEth]
+                otherMachine = graph.returnNode(eachRouter).connections[indexEth]
+                otherIPlist = graph.returnNode(otherMachine).ip
+                otherIPindex = checkIfItemIsSimilar(otherIPlist,returnNetworkName(myIP))
+                if otherIPindex != None:
+                    otherIP = graph.returnNode(otherMachine).ip[otherIPindex].replace("/24","")
+                    file.write("sudo ip route add "+eachNetwork+" via " + otherIP + " dev " + myEth + "\n")
+
+def applyBgp(router, file, graph):
+    file.write("sudo apt-get -y install quagga\n")
+    file.write("sudo yum install quagga\n")
+    shutil.copyfile("../../../Automate/Host_Scripts/Base_Files/bgpd.conf", "../../../Automate/Guest_Scripts/BGP_Information/"+router+"_bgpd.conf")
+    shutil.copyfile("../../../Automate/Host_Scripts/Base_Files/zebra.conf", "../../../Automate/Guest_Scripts/BGP_Information/"+router+"_zebra.conf")
+    shutil.copyfile("../../../Automate/Host_Scripts/Base_Files/vtysh.conf", "../../../Automate/Guest_Scripts/BGP_Information/"+router+"_vtysh.conf")
+
+    bgpFile = open("../../../Automate/Guest_Scripts/BGP_Information/"+router+"_bgpd.conf", "r" , newline='\n')
+    indexBGP = 0
+    linesBGP = bgpFile.readlines()
+    for i, eachLine in  enumerate(linesBGP):
+        if "router bgp 7675" in eachLine:
+            indexBGP = i+1
+    bgpFile.close()
+
+    zebraFile = open("../../../Automate/Guest_Scripts/BGP_Information/"+router+"_zebra.conf", "r" , newline='\n')
+    indexZebra = 0
+    linesZebra = zebraFile.readlines()
+    for i, eachLine in  enumerate(linesZebra):
+        if "enable" in eachLine:
+            indexZebra = i+1
+    zebraFile.close()
+
+    bgpAddedText = "bgp router-id " + graph.returnNode(router).ip[0].replace("/24","").replace("."," ") +"\n"
+    connections = graph.returnNode(router).connections
+    ips = graph.returnNode(router).ip
+    eths = graph.returnNode(router).eth
+    for eachIp in ips:
+        networkName = returnNetworkName(eachIp)+"0/24"
+        bgpAddedText = bgpAddedText + "  network "+  networkName+"\n"
+
+    for i, eachConnection in enumerate(connections):
+        if "Router" in eachConnection:
+            currentIP = ips[i]
+            indexIP = checkIfItemIsSimilar(graph.returnNode(eachConnection).ip, returnNetworkName(currentIP))
+            ip = graph.returnNode(eachConnection).ip[indexIP]
+            bgpAddedText = bgpAddedText + "  neighbor " + ip + " remote-as 7675\n"
+
+    zebraAddedText = "!\n"
+    for i, eachIp in enumerate(ips):
+        zebraAddedText = zebraAddedText + "interface "+  eths[i]+"\n"
+        zebraAddedText = zebraAddedText + "ip address "+  eachIp+"\n!\n"
+
+    linesBGP.insert(indexBGP, bgpAddedText)
+    linesZebra.insert(indexZebra, zebraAddedText)
+
+    bgpFile = open("../../../Automate/Guest_Scripts/BGP_Information/"+router+"_bgpd.conf", "w" , newline='\n')
+    linesBGP = "".join(linesBGP)
+    bgpFile.write(linesBGP)
+    bgpFile.close()
+
+    zebraFile = open("../../../Automate/Guest_Scripts/BGP_Information/"+router+"_zebra.conf", "w" , newline='\n')
+    linesZebra = "".join(linesZebra)
+    zebraFile.write(linesZebra)
+    zebraFile.close()
+
+    thisBgpFile = "/vagrant/Guest_Scripts/BGP_Information/"+router+"_bgpd.conf"
+    thisZebraFile =  "/vagrant/Guest_Scripts/BGP_Information/"+router+"_zebra.conf"
+    thisVtyshFile =  "/vagrant/Guest_Scripts/BGP_Information/"+router+"_vtysh.conf"
+    file.write("sudo cat " +thisBgpFile+" > /etc/quagga/bgpd.conf\n")
+    file.write("sudo cat " +thisZebraFile+" > /etc/quagga/zebra.conf\n")
+    file.write("sudo cat " +thisVtyshFile+" > /etc/quagga/vtysh.conf\n")
+    file.write("sudo chown quagga:quagga /etc/quagga/*.conf\n")
+    file.write("sudo chown quagga:quaggavty /etc/quagga/vtysh.conf\n")
+    file.write("sudo chmod 640 /etc/quagga/*.conf\n")
+    file.write("sudo service bgpd start\n")
+    file.write("sudo service zebra start\n")
+
 
 def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
     print("applying Vxlan")
@@ -465,14 +540,16 @@ def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
         if "vxlan=True" in serviceByMachine_dict[eachRouter]:
             file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
 
-            #creates default gateway to send vxlan ip package
-            indexEth = graph.returnNode(eachRouter).eth.index("eth100")
-            network = graph.returnNode(eachRouter).ip[indexEth]
-            otherMachine = graph.returnNode(eachRouter).connections[indexEth]
-            indexIP = checkIfItemIsSimilar(graph.returnNode(otherMachine).ip, returnNetworkName(network))
-            ip = graph.returnNode(otherMachine).ip[indexIP]
-            file.write("sudo ip route del 0/0\n")
-            file.write("sudo ip route add 0/0 via " + ip.replace("/24","") + " dev eth100 \n")
+            if not ("bgp=True" in serviceByMachine_dict[eachRouter]):
+                #creates default gateway to send vxlan ip package
+                indexEth = graph.returnNode(eachRouter).eth.index("eth100")
+                network = graph.returnNode(eachRouter).ip[indexEth]
+                otherMachine = graph.returnNode(eachRouter).connections[indexEth]
+                indexIP = checkIfItemIsSimilar(graph.returnNode(otherMachine).ip, returnNetworkName(network))
+                ip = graph.returnNode(otherMachine).ip[indexIP]
+                file.write("sudo ip route del 0/0\n")
+                file.write("sudo ip route add 0/0 via " + ip.replace("/24","") + " dev eth100 \n")
+
 
             file.write("sudo ip link add br0 type bridge\n")
             file.write("sudo ip link set br0 up\n")
@@ -532,10 +609,11 @@ def main():
 
     addDefaultGateWayServers(machinesByType_dict["Servers"] , graph)
     setupSwitchs(machinesByType_dict["Switchs"], serviceByMachine_dict, graph)
-    setupRouters(machinesByType_dict["Routers"], routersRouterTable_dict, graph)
+    setupRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
     vxlanNetworkInterfaces = applyVxlanRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
     applyVxlanServers(machinesByType_dict["Servers"], serviceByMachine_dict, vxlanNetworkInterfaces, graph)
 
+    run(allMachines_list, serviceByMachine_dict, graph)
     print()
 
 #-----------------------------------------------------

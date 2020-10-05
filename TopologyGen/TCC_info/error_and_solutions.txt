@@ -24,3 +24,9 @@ end
 
 # Run Any Platform Specific Code and Apply the interface Re-map
 #   (may or may not perform a reboot depending on platform)
+
+
+yum install quagga
+yum install quagga-doc
+
+ bgp router-id 10.255.1.95 1
