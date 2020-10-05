@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -77,43 +77,43 @@ public class optRouter_controller : MonoBehaviour
 
     public List<string> getAvaiableCheckBoxOptions()
     {
-        List<string> thisList = new List<string>();
-        string line;
-        string path_custom = "";
-        string path_standart="";
-        //GameView
-        if (menu_controller.OnGameRunning == false)
-        {
-            path_standart = @"../../Automate/vagrant_box/router_services.txt";
-            path_custom = @"../../Automate/User_Scripts/Python_Services/";
-        }
-        //GameBuild
-        if (menu_controller.OnGameRunning == true)
-        {
-            path_standart = @"../../../../Automate/vagrant_box/router_services.txt";
-            path_custom = @"../../../Automate/User_Scripts/Python_Services/";
-        }
+      List<string> thisList = new List<string>();
+      string line;
+      string path_custom = "";
+      string path_standart="";
+      //GameView
+      if (menu_controller.OnGameRunning == false)
+      {
+          path_standart = @"../../Automate/vagrant_box/router_services.txt";
+          path_custom = @"../../Automate/User_Scripts/Python_Services/";
+      }
 
-        using (StreamReader os_file = new StreamReader(path_standart))
-        {
-            while ((line = os_file.ReadLine()) != null)
-            {
-                thisList.Add(line);
-            }
-        }
-        DirectoryInfo dir = new DirectoryInfo(path_custom);
-        FileInfo[] Files = dir.GetFiles("*.py");
-        string str = "";
-        foreach(FileInfo file in Files )
-        {
-          if(file.Name.Contains("Server")){
-            thisList.Add(file.Name.Replace("Server_", "").Replace(".py", ""));
+      //GameBuild
+      if (menu_controller.OnGameRunning == true)
+      {
+          path_standart = @"../../../Automate/vagrant_box/router_services.txt";
+          path_custom = @"../../../Automate/User_Scripts/Python_Services/";
+      }
+      using (StreamReader os_file = new StreamReader(path_standart))
+      {
+          while ((line = os_file.ReadLine()) != null)
+          {
+              thisList.Add(line);
           }
-          if(file.Name.Contains("All")){
-            thisList.Add(file.Name.Replace("All_", "").Replace(".py", ""));
-          }
+      }
+      DirectoryInfo dir = new DirectoryInfo(path_custom);
+      FileInfo[] Files = dir.GetFiles("*.py");
+      string str = "";
+      foreach(FileInfo file in Files )
+      {
+        if(file.Name.Contains("Router")){
+          thisList.Add(file.Name.Replace("Router_", "").Replace(".py", ""));
         }
-        return thisList;
+        if(file.Name.Contains("All")){
+          thisList.Add(file.Name.Replace("All_", "").Replace(".py", ""));
+        }
+      }
+      return thisList;
     }
 
     public void PopulateDropdown(Dropdown dropdown, List<string> optionsArray)

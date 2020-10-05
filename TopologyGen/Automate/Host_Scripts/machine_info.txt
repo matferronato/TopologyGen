@@ -1,4 +1,7 @@
-Server-0 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True
-Server-1 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True
+Router-0 hashicorp/bionic64 1.0.282 1MB router=True  vxlan=True bgp=False hostname=False
+Router-1 hashicorp/bionic64 1.0.282 1MB router=True  vxlan=True bgp=False hostname=False
+Server-0 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=True hostname=False
+Server-1 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=True hostname=False
+Server-2 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=True hostname=False
+Server-3 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=False
 Switch-0 hashicorp/bionic64 1.0.282 1MB switch=True  vlan=False hostname=False
-Switch-1 hashicorp/bionic64 1.0.282 1MB switch=True  vlan=False hostname=False

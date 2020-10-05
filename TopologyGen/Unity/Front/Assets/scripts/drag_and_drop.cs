@@ -37,6 +37,7 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
 
     private void Awake()
     {
+        linked = false;
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         if (gameObject.tag == "Server") {
@@ -91,7 +92,6 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         Canvas[] canvas_list = GetComponentsInParent<Canvas>();
         canvas = canvas_list[canvas_list.Length - 1];
         selected = false;
-        linked = false;
         serverConnectedNumber = 1;
         switchConnectedNumber = 50;
         routerConnectedNumber = 100;
@@ -136,8 +136,10 @@ public class drag_and_drop :  MonoBehaviour, IPointerDownHandler, IBeginDragHand
         //Debug.Log("OnEndDrag");
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
+        UnityEngine.Debug.Log(linked);
         if (linked == true)
         {
+          UnityEngine.Debug.Log("AAA");
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, line_creation.Zvalue));
             for (int i = 0; i < connections.Count; i++)
             {

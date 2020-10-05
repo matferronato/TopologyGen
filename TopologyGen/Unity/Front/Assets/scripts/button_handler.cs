@@ -10,6 +10,8 @@ using System.ComponentModel;
 
 public class button_handler : MonoBehaviour
 {
+    public GameObject getLine;
+    static GameObject defaultLine;
     public GameObject ServerButton;
     public GameObject SwitchButton;
     public GameObject RouterButton;
@@ -93,6 +95,7 @@ public class button_handler : MonoBehaviour
         createRouter = false;
         StartButton.SetActive(true);
         StopButton.SetActive(false);
+        defaultLine = getLine;
     }
 
     // Update is called once per frame
@@ -716,12 +719,12 @@ public class button_handler : MonoBehaviour
         //GameView
         if (menu_controller.OnGameRunning == false)
         {
-            path = @"C:../../Automate/Host_Scripts/connections.txt";
+            path = @"../../Automate/Host_Scripts/Save/ZZZAll_Connections.txt";
         }
         //GameBuild
         if (menu_controller.OnGameRunning == true)
         {
-            path = @"C:../../Automate/Host_Scripts/connections.txt";
+            path = @".././../../Automate/Host_Scripts/Save/ZZZAll_Connections.txt";
         }
         using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
         {
@@ -790,7 +793,6 @@ public class button_handler : MonoBehaviour
     }
 
 
-
     IEnumerator readNameFile()
     {
         waitingToRunning = true;
@@ -816,4 +818,236 @@ public class button_handler : MonoBehaviour
         waitingToRunning = false;
         startRunning = true;
     }
+
+
+    public void saveState()
+    {
+      string path = "";
+      //GameView
+      if (menu_controller.OnGameRunning == false)
+      {
+          path = @"../../Automate/Host_Scripts/Save/";
+      }
+      //GameBuild
+      if (menu_controller.OnGameRunning == true)
+      {
+          path = @"../../../Automate/Host_Scripts/Save/";
+      }
+      System.IO.DirectoryInfo dir = new DirectoryInfo(path);
+      foreach (FileInfo file in dir.GetFiles())
+      {
+        file.Delete();
+      }
+      writePairConnections();
+      getAllMachines();
+      foreach (GameObject machine in allMachines)
+      {
+        List<string> Lines = new List<string>();
+        string this_name = machine.name;
+        float posX = machine.transform.position.x;
+        float posY = machine.transform.position.y;
+        float posZ = machine.transform.position.z;
+        float mousePosX = machine.GetComponent<drag_and_drop>().position.Item1;
+        float mousePosY = machine.GetComponent<drag_and_drop>().position.Item2;
+        bool this_linked = machine.GetComponent<drag_and_drop>().linked;
+        List<string> this_ip = machine.GetComponent<drag_and_drop>().ip;
+        List<string> this_eth = machine.GetComponent<drag_and_drop>().eth;
+        string this_OS = machine.GetComponent<drag_and_drop>().OS;
+        string this_OSVersion = machine.GetComponent<drag_and_drop>().OSversion;
+        int this_memory = machine.GetComponent<drag_and_drop>().memory;
+        int this_machineSetup = machine.GetComponent<drag_and_drop>().machineSetup;
+        int this_serverConnectedNumber= machine.GetComponent<drag_and_drop>().serverConnectedNumber;
+        int this_switchConnectedNumber = machine.GetComponent<drag_and_drop>().switchConnectedNumber;
+        int this_routerConnectedNumber = machine.GetComponent<drag_and_drop>().routerConnectedNumber;
+        List<bool> this_services = machine.GetComponent<drag_and_drop>().services;
+        Tuple<float, float> this_position = machine.GetComponent<drag_and_drop>().position;
+        List<GameObject> this_connections = machine.GetComponent<drag_and_drop>().connections;
+        List<GameObject> this_attatchedText = machine.GetComponent<drag_and_drop>().attatchedText;
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(path+ this_name +".txt"))
+        {
+          Lines.Add("name"); Lines.Add(this_name);Lines.Add("####################################");
+          Lines.Add("linked");if (this_linked == true){Lines.Add("true");} else{Lines.Add("false");}Lines.Add("####################################");
+          Lines.Add("ip");
+          foreach (string ip in this_ip)
+          {
+            Lines.Add(ip);
+          }
+          Lines.Add("####################################");
+          Lines.Add("eth");
+          foreach (string eth in this_eth)
+          {
+            Lines.Add(eth);
+          }
+          Lines.Add("####################################");
+          Lines.Add("OS"); Lines.Add(this_OS);Lines.Add("####################################");
+          Lines.Add("OSVersion"); Lines.Add(this_OSVersion);Lines.Add("####################################");
+          Lines.Add("Memory"); Lines.Add(this_memory.ToString());Lines.Add("####################################");
+          Lines.Add("machineSetup"); Lines.Add(this_machineSetup.ToString());Lines.Add("####################################");
+          Lines.Add("serverConnectedNumber"); Lines.Add(this_serverConnectedNumber.ToString());Lines.Add("####################################");
+          Lines.Add("switchConnectedNumber"); Lines.Add(this_switchConnectedNumber.ToString());Lines.Add("####################################");
+          Lines.Add("routerConnectedNumber"); Lines.Add(this_routerConnectedNumber.ToString());Lines.Add("####################################");
+          Lines.Add("services");
+          foreach (bool eachService in this_services)
+          {
+            if(eachService == true){Lines.Add("true");} else{Lines.Add("false");}
+          }
+          Lines.Add("####################################");
+          Lines.Add("pos");
+          Lines.Add(posX.ToString());Lines.Add(posY.ToString());Lines.Add(posZ.ToString());
+          Lines.Add("####################################");
+          Lines.Add("mousePos");
+          Lines.Add(mousePosX.ToString());Lines.Add(mousePosY.ToString());
+          Lines.Add("####################################");
+          foreach (string line in Lines)
+          {
+              file.Write(line);
+              file.Write("\n");
+          }
+        }
+      }
+      allMachines.Clear();
+    }
+
+    public void loadState()
+    {
+      clearAll();
+      string path = "";
+      //GameView
+      if (menu_controller.OnGameRunning == false)
+      {
+          path = @"../../Automate/Host_Scripts/Save/";
+      }
+      //GameBuild
+      if (menu_controller.OnGameRunning == true)
+      {
+          path = @"../../../Automate/Host_Scripts/Save/";
+      }
+      DirectoryInfo dir = new DirectoryInfo(path);
+      FileInfo[] Files = dir.GetFiles("*.txt");
+      string str = "";
+      string line = "";
+      foreach(FileInfo file in Files )
+      {
+        GameObject thisObj;
+        if(file.Name.Contains("ZZZAll_Connections")){
+          foreach (string reader in System.IO.File.ReadAllLines(path+file.Name)){
+              string[] stringList = reader.Split(null);
+              string machine_A = stringList[0];
+              string machine_B = stringList[1];
+              GameObject objA = GameObject.Find(machine_A);
+              GameObject objB = GameObject.Find(machine_B);
+              Tuple<GameObject, GameObject> thisConnection = new Tuple<GameObject, GameObject>(objA, objB);
+              float mousePosAx = objA.GetComponent<drag_and_drop>().position.Item1;
+              float mousePosAy = objA.GetComponent<drag_and_drop>().position.Item2;
+              float mousePosBx = objB.GetComponent<drag_and_drop>().position.Item1;
+              float mousePosBy = objB.GetComponent<drag_and_drop>().position.Item2;
+              line_creation.createTextInterface(objA, new Vector3(mousePosAx, mousePosAy, 0f), objB, new Vector3(mousePosBx, mousePosBy, 0f));
+              line_creation.setupConnections(objA, objB);
+              var thisLine = Instantiate(defaultLine, new Vector3(0f, 0f, 0f), Quaternion.identity);
+              thisLine.name = "Line_" + objA.name + "_" + objB.name;
+              var linkedline = thisLine.GetComponent<LineRenderer>();
+              linkedline.SetPosition(0, new Vector3(mousePosAx, mousePosAy, 0f));
+              linkedline.SetPosition(1, new Vector3(mousePosBx, mousePosBy, 0f));
+              lineObjList.Add(thisLine);
+              connectionsObjList.Add(thisConnection);
+          }
+          continue;
+        }
+        else if(file.Name.Contains("Server")){
+          if (magnetic_dop.deletedServer == true)
+          {
+              magnetic_dop.deletedServer = false;
+          }
+          else
+          {
+              serverNameQueue.Enqueue(totalServerNumber);
+              totalServerNumber = totalServerNumber + 1;
+          }
+          thisObj = Instantiate(ServerButton, new Vector2(0.0f, 0.0f), Quaternion.identity);
+          thisObj.transform.parent = gameObject.transform;
+        }
+        else if(file.Name.Contains("Switch")){
+          if (magnetic_dop.deletedSwitch == true)
+          {
+              magnetic_dop.deletedSwitch = false;
+          }
+          else
+          {
+              switchNameQueue.Enqueue(totalSwitchNumber);
+              totalSwitchNumber = totalSwitchNumber + 1;
+          }
+          thisObj = Instantiate(SwitchButton, new Vector2(0.0f, 0.0f), Quaternion.identity);
+          thisObj.transform.parent = gameObject.transform;
+        }
+        else {
+          if (magnetic_dop.deletedRouter == true)
+          {
+              magnetic_dop.deletedRouter = false;
+          }
+          else
+          {
+              routerNameQueue.Enqueue(totalRouterNumber);
+              totalRouterNumber = totalRouterNumber + 1;
+          }
+          thisObj = Instantiate(RouterButton, new Vector2(0.0f, 0.0f), Quaternion.identity);
+          thisObj.transform.parent = gameObject.transform;
+        }
+        string aux = "";
+        using (StreamReader reader = new StreamReader(path+file.Name)){
+          aux = reader.ReadLine(); //read name
+          thisObj.name = reader.ReadLine(); //read name value
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and linked
+          UnityEngine.Debug.Log(thisObj.GetComponent<drag_and_drop>().linked);
+          if(reader.ReadLine() == "true"){ thisObj.GetComponent<drag_and_drop>().linked = true;} //read linked value}
+          else{thisObj.GetComponent<drag_and_drop>().linked = false;}
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and ip
+          while((line = reader.ReadLine()) != null && (line != "####################################"))
+          {
+            thisObj.GetComponent<drag_and_drop>().ip.Add(line);
+          }
+          aux = reader.ReadLine();
+          while((line = reader.ReadLine()) != null && (line != "####################################"))
+          {
+            thisObj.GetComponent<drag_and_drop>().eth.Add(line);
+          }
+          aux = reader.ReadLine(); //read OS
+          thisObj.GetComponent<drag_and_drop>().OS = reader.ReadLine();//read OS value
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and OSversion
+          thisObj.GetComponent<drag_and_drop>().OSversion = reader.ReadLine();//read OS versio value
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and memory
+          thisObj.GetComponent<drag_and_drop>().memory = Int16.Parse(reader.ReadLine());
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and machineSetup
+          thisObj.GetComponent<drag_and_drop>().machineSetup = Int16.Parse(reader.ReadLine());
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and serverConnectedNumber
+          thisObj.GetComponent<drag_and_drop>().serverConnectedNumber = Int16.Parse(reader.ReadLine());
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and routerConnectedNumber
+          thisObj.GetComponent<drag_and_drop>().routerConnectedNumber = Int16.Parse(reader.ReadLine());
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and switchConnectedNumber
+          thisObj.GetComponent<drag_and_drop>().switchConnectedNumber = Int16.Parse(reader.ReadLine());
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and services
+          int i = 0;
+          while((line = reader.ReadLine()) != null && (line != "####################################"))
+          {
+            if(line == "true") {thisObj.GetComponent<drag_and_drop>().services[i] = true;}
+            else {thisObj.GetComponent<drag_and_drop>().services[i] = false;}
+            i = i+1;
+          }
+          aux = reader.ReadLine();
+          float posX =  float.Parse(reader.ReadLine());
+          float posY =  float.Parse(reader.ReadLine());
+          float posZ =  float.Parse(reader.ReadLine());
+          thisObj.transform.position = new Vector3(posX,posY,posZ);
+          aux = reader.ReadLine(); aux = reader.ReadLine(); //read separator and mousePos
+          float mousePosX =  float.Parse(reader.ReadLine());
+          float mousePosY =  float.Parse(reader.ReadLine());
+          thisObj.GetComponent<drag_and_drop>().position = Tuple.Create(mousePosX, mousePosY);
+          if(file.Name.Contains("Server")){serverObjQueue.Enqueue(thisObj);}
+          if(file.Name.Contains("Switch")){switchObjQueue.Enqueue(thisObj);}
+          if(file.Name.Contains("Router")){routerObjQueue.Enqueue(thisObj);}
+          UnityEngine.Debug.Log(thisObj.GetComponent<drag_and_drop>().linked);
+        }
+      }
+    }
+
+
 }

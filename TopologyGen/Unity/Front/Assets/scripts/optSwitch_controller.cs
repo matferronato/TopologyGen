@@ -104,8 +104,8 @@ public class optSwitch_controller : MonoBehaviour
         string str = "";
         foreach(FileInfo file in Files )
         {
-          if(file.Name.Contains("Server")){
-            thisList.Add(file.Name.Replace("Server_", "").Replace(".py", ""));
+          if(file.Name.Contains("Switch")){
+            thisList.Add(file.Name.Replace("Switch_", "").Replace(".py", ""));
           }
           if(file.Name.Contains("All")){
             thisList.Add(file.Name.Replace("All_", "").Replace(".py", ""));

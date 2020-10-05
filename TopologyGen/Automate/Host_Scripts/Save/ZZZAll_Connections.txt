@@ -1,0 +1,6 @@
+Switch-0 Server-0
+Switch-0 Server-1
+Router-0 Switch-0
+Router-1 Server-2
+Router-0 Router-1
+Router-1 Server-3

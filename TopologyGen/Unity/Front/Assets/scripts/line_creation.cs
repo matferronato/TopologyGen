@@ -112,16 +112,16 @@ public class line_creation : MonoBehaviour
         if (posA.x > posB.x) { deslocXA = -20; deslocXB = 75; }
         if (posA.y < posB.y) { deslocYA = 0; deslocYB = -90; }
         if (posA.y > posB.y) { deslocYA = -90; deslocYB = 0; }
-        
+
         GameObject tempTextBox = Instantiate(textPrefab, new Vector3(posA.x, posA.y, Zvalue), Quaternion.identity);
         tempTextBox.transform.SetParent(objA.transform, false);
         int thisInterface = objA.GetComponent<drag_and_drop>().attatchedText.Count;
         tempTextBox.name = tempTextBox.transform.parent.name + "_ipText_" + thisInterface.ToString();
-        tempTextBox.transform.position = new Vector2(tempTextBox.transform.position.x + deslocXA, tempTextBox.transform.position.y + deslocYA); 
+        tempTextBox.transform.position = new Vector2(tempTextBox.transform.position.x + deslocXA, tempTextBox.transform.position.y + deslocYA);
         tempTextBox.GetComponent<Text>().color = new Color32(0,0,0, 255);
         tempTextBox.GetComponent<Text>().text = "IP X.X.X.X\nEthX";
         objA.GetComponent<drag_and_drop>().attatchedText.Add(tempTextBox);
-        
+
         tempTextBox = Instantiate(textPrefab, new Vector3(posB.x, posB.y, Zvalue), Quaternion.identity);
         tempTextBox.transform.SetParent(objB.transform, false);
         thisInterface = objB.GetComponent<drag_and_drop>().attatchedText.Count;
@@ -142,7 +142,7 @@ public class line_creation : MonoBehaviour
                 {
                     thisMachine.GetComponent<drag_and_drop>().ip[i] = IP;
                     checkIfNullIp(IP, thisMachine.GetComponent<drag_and_drop>().connections[i]);
-                }    
+                }
         }
     }
 
