@@ -1,10 +1,18 @@
-Router-0
+Router-2
     1.1.1.0/24 via -> eth50
     2.2.2.0/24 via -> eth100
     3.3.3.0/24 via -> eth100
     4.4.4.0/24 via -> eth100
-Router-1
+    5.5.5.0/24 via -> eth100
+Router-0
     1.1.1.0/24 via -> eth100
     2.2.2.0/24 via -> eth1
     3.3.3.0/24 via -> eth100
-    4.4.4.0/24 via -> eth2
+    4.4.4.0/24 via -> eth100
+    5.5.5.0/24 via -> eth2
+Router-1
+    1.1.1.0/24 via -> eth100
+    2.2.2.0/24 via -> eth101
+    3.3.3.0/24 via -> eth100
+    4.4.4.0/24 via -> eth101
+    5.5.5.0/24 via -> eth101
