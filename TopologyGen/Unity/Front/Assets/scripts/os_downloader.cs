@@ -102,14 +102,14 @@ public class os_downloader : MonoBehaviour
       string myOsVersion = OSversionOptionsList[thisDropdown.value];
       if (menu_controller.OnGameRunning == false)
       {
-          string getAvaiableOs = "gnome-terminal -x bash -ic ' sudo vagrant box add " + myOs + " ; vagrant mutate "+myOs+" libvirt ; echo "+myOs+" >> ../../Automate/vagrant_box/boxes.txt ; echo "+myOsVersion+" >> ../../Automate/vagrant_box/boxes_version.txt '";
+          string getAvaiableOs = "gnome-terminal -x bash -ic ' vagrant box add " + myOs + " ; vagrant mutate "+myOs+" libvirt ; echo "+myOs+" >> ../../Automate/vagrant_box/boxes.txt ; echo "+myOsVersion+" >> ../../Automate/vagrant_box/boxes_version.txt '";
           UnityEngine.Debug.Log(getAvaiableOs);
           ExecuteCommand(getAvaiableOs);
       }
       //GameBuild
       if (menu_controller.OnGameRunning == true)
       {
-          string getAvaiableOs = "gnome-terminal -x bash -ic ' sudo vagrant box add " + myOs + " ; vagrant mutate "+myOs+" libvirt ; echo "+myOs+" >> ../../../Automate/vagrant_box/boxes.txt ; echo "+myOsVersion+" >> ../../../Automate/vagrant_box/boxes_version.txt '";
+          string getAvaiableOs = "gnome-terminal -x bash -ic ' vagrant box add " + myOs + " ; vagrant mutate "+myOs+" libvirt ; echo "+myOs+" >> ../../../Automate/vagrant_box/boxes.txt ; echo "+myOsVersion+" >> ../../../Automate/vagrant_box/boxes_version.txt '";
           ExecuteCommand(getAvaiableOs);
       }
     }

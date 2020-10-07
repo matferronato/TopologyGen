@@ -733,6 +733,6 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   platform: 24
   scenePathNames:
-  - Assets/Scenes/MainMenu.unity
   - Assets/Scenes/SampleScene.unity
+  - Assets/Scenes/MainMenu.unity
   playerPath: /home/matferronato/Code/TCC/TopologyGen/TopologyGen/Unity/Front/Run_App/TopologyGenerator.x86_64

@@ -1,0 +1,17 @@
+sudo ip addr add 6.6.6.2/24 dev eth100
+sudo ip link set eth100 up
+sudo ifconfig eth100 6.6.6.2/24 up
+sudo ip addr add 7.7.7.1/24 dev eth101
+sudo ip link set eth101 up
+sudo ifconfig eth101 7.7.7.1/24 up
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo apt-get -y install quagga
+sudo yum install quagga
+sudo cat /vagrant/Guest_Scripts/BGP_Information/Router-1_bgpd.conf > /etc/quagga/bgpd.conf
+sudo cat /vagrant/Guest_Scripts/BGP_Information/Router-1_zebra.conf > /etc/quagga/zebra.conf
+sudo cat /vagrant/Guest_Scripts/BGP_Information/Router-1_vtysh.conf > /etc/quagga/vtysh.conf
+sudo chown quagga:quagga /etc/quagga/*.conf
+sudo chown quagga:quaggavty /etc/quagga/vtysh.conf
+sudo chmod 640 /etc/quagga/*.conf
+sudo service bgpd start
+sudo service zebra start

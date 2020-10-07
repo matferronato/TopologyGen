@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System;
 using System.Diagnostics;
 using System.ComponentModel;
+using UnityEngine.SceneManagement;
 
 public class button_handler : MonoBehaviour
 {
@@ -819,6 +820,10 @@ public class button_handler : MonoBehaviour
         startRunning = true;
     }
 
+    public void RunOsMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 
     public void saveState()
     {
