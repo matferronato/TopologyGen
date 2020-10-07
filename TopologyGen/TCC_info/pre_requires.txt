@@ -3,6 +3,8 @@ bash 5
 
 pip install
 
+urllib.request
+bs4
 treelib
 pydotplus
 bcolors

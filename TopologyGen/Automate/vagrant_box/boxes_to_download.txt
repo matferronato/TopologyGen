@@ -1,0 +1,10 @@
+puphpet/ubuntu1404-x64
+laravel/homestead
+hashicorp/precise64
+ubuntu/trusty64
+scotch/box
+debian/jessie64
+hashicorp/precise32
+centos/7
+ubuntu/xenial64
+bento/ubuntu-16.04
