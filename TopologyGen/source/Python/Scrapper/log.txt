@@ -62,3 +62,7 @@ https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=tiny
 https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=
 https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=tiny
 https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=tiny
+https://app.vagrantup.com/boxes/search
+https://app.vagrantup.com/boxes/search?page=2
+https://app.vagrantup.com/boxes/search?page=3
+https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=tiny

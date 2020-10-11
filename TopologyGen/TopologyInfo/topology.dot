@@ -1,29 +1,25 @@
 graph vx {
-"Router-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router-1" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router-2" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router-3" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router-4" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-1" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-2" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-3" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-4" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Server-5" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Server-6" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Server-7" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Server-8" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
+"Server-9" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Switch-0" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
 "Switch-1" [function="leaf" vagrant="eth1" os="hashicorp/bionic64" version="1.0.282" memory="500" config="./helper_scripts/config_production_switch.sh" ]
-"Router-4":"eth1" -- "Server-5":"eth100"
-"Switch-1":"swp1" -- "Server-4":"eth50"
-"Switch-0":"swp1" -- "Server-2":"eth50"
-"Router-0":"eth50" -- "Switch-0":"swp100"
-"Switch-0":"swp2" -- "Server-1":"eth50"
-"Switch-0":"swp3" -- "Server-0":"eth50"
-"Router-0":"eth51" -- "Switch-1":"swp100"
-"Router-4":"eth100" -- "Router-0":"eth100"
-"Router-2":"eth1" -- "Server-4":"eth100"
-"Router-1":"eth100" -- "Router-0":"eth101"
-"Router-2":"eth100" -- "Router-1":"eth101"
-"Router-3":"eth100" -- "Router-0":"eth102"
-"Router-3":"eth101" -- "Router-2":"eth101"
-"Router-4":"eth2" -- "Server-3":"eth100"
+"Switch-0":"swp1" -- "Server-9":"eth50"
+"Switch-0":"swp50" -- "Switch-1":"swp50"
+"Switch-1":"swp1" -- "Server-0":"eth50"
+"Switch-1":"swp2" -- "Server-1":"eth50"
+"Switch-1":"swp3" -- "Server-2":"eth50"
+"Switch-1":"swp4" -- "Server-3":"eth50"
+"Switch-1":"swp5" -- "Server-4":"eth50"
+"Switch-0":"swp2" -- "Server-5":"eth50"
+"Switch-0":"swp3" -- "Server-6":"eth50"
+"Switch-0":"swp4" -- "Server-7":"eth50"
+"Switch-0":"swp5" -- "Server-8":"eth50"
 }

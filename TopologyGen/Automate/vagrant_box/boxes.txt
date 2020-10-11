@@ -1,3 +1,4 @@
 hashicorp/bionic64
 centos/7
 exnav29/lxle
+olbat/tiny-core-micro

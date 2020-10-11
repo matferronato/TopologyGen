@@ -421,6 +421,7 @@ def setupSwitchs(switchs, serviceByMachine_dict, graph):
         if "vlan=True" in serviceByMachine_dict[eachSwitch]:
             file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
             interfaces = list(graph.returnNode(eachSwitch).eth)
+            machinesConnected = list(graph.returnNode(eachSwitch).connections)
             trunk = ""
             if "swp50" in interfaces:
                 index = interfaces.index("swp50")
@@ -435,11 +436,17 @@ def setupSwitchs(switchs, serviceByMachine_dict, graph):
             else:
                 for eachVlan in range(0,2):
                     file.write("sudo ip link add name br"+str(eachVlan)+" type bridge\n")
+            half1 = open("../../../Automate/Guest_Scripts/Color_Information/Blue.cnfg", "a")
+            half2 = open("../../../Automate/Guest_Scripts/Color_Information/Red.cnfg", "a")
             for index, eachInterface in enumerate(interfaces):
                 if index < len(eachInterface)/2:
                     file.write("sudo ip link set dev "+eachInterface+" master br0\n")
+                    half1.write(eachSwitch+" "+machinesConnected[index]+"\n")
                 else:
                     file.write("sudo ip link set dev "+eachInterface+" master br1\n")
+                    half2.write(eachSwitch+" "+machinesConnected[index]+"\n")
+            half1.close()
+            half2.close()
         else:
             file = open("../../../Automate/Guest_Scripts/"+eachSwitch+".cnfg", "a")
             file.write("sudo ip link add name br0 type bridge\n")
@@ -453,7 +460,6 @@ def setupSwitchs(switchs, serviceByMachine_dict, graph):
 def setupRouters(routers, routerTable, serviceByMachine_dict, graph):
     print("seting up routers")
     bgpAsNumber_dict = {}
-
     autonomous_system = 75
     for eachRouter in routerTable:
         bgpAsNumber_dict[eachRouter] = "76"+str(autonomous_system)
@@ -599,7 +605,11 @@ def applyVxlanServers(servers, serviceByMachine_dict, vxlanNetworkInterfaces, gr
                 networkName = returnNetworkName(eachNetwork)
                 if checkIfItemIsSimilar(vxlanNetworkInterfaces, networkName) != None:
                     correctEth =  graph.returnNode(eachServer).eth[index]
+                    otherMachine = graph.returnNode(eachServer).connections[index]
                     file.write("sudo ip addr add 100.100.100."+str(j)+"/24 dev "+correctEth+"\n")
+                    color = open("../../../Automate/Guest_Scripts/Color_Information/Yellow.cnfg", "a")
+                    color.write(otherMachine+" "+eachServer+"\n")
+                    color.close()
                     j=j+1
 
 def main():

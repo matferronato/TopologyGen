@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.ComponentModel;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class button_handler : MonoBehaviour
 {
@@ -815,6 +816,58 @@ public class button_handler : MonoBehaviour
         {
             yield return new WaitForSeconds(2);
             using (StreamReader reader = new StreamReader(path)) { line = reader.ReadLine(); }
+        }
+        string pathBlue="";
+        string pathRed="";
+        string pathYellow="";
+        string pathPurple="";
+        if (menu_controller.OnGameRunning == false)
+        {
+            pathBlue = @"../../Automate/Guest_Scripts/Color_Information/Blue.cnfg";
+            pathRed = @"../../Automate/Guest_Scripts/Color_Information/Red.cnfg";
+            pathYellow = @"../../Automate/Guest_Scripts/Color_Information/Yellow.cnfg";
+            pathPurple = @"../../Automate/Guest_Scripts/Color_Information/Purple.cnfg";
+        }
+        //GameBuild
+        if (menu_controller.OnGameRunning == true)
+        {
+          pathBlue = @"../../../Automate/Guest_Scripts/Color_Information/Blue.cnfg";
+          pathRed = @"../../../Automate/Guest_Scripts/Color_Information/Red.cnfg";
+          pathYellow = @"../../../Automate/Guest_Scripts/Color_Information/Yellow.cnfg";
+          pathPurple = @"../../../Automate/Guest_Scripts/Color_Information/Purple.cnfg";
+        }
+        string[] possibleColors = {pathBlue,pathRed,pathYellow, pathPurple};
+        for(int indexColor = 0; indexColor < 4; indexColor++){
+          using (StreamReader os_file = new StreamReader(possibleColors[indexColor]))
+          {
+            UnityEngine.Debug.Log(possibleColors[indexColor]);
+            List<String> listStrLineElements;
+            while ((line = os_file.ReadLine()) != null)
+            {
+              listStrLineElements = line.Split(' ').ToList();
+              int index = 0;
+              foreach(var connection in connectionsObjList){
+                string Name1 = connection.Item1.name;
+                string Name2 = connection.Item2.name;
+                UnityEngine.Debug.Log(" ");
+                UnityEngine.Debug.Log(listStrLineElements[0] + " " + listStrLineElements[1]);
+                UnityEngine.Debug.Log(Name1  + " " + Name2);
+                UnityEngine.Debug.Log(Name2  + " " + Name1);
+                UnityEngine.Debug.Log(" ");
+                if((Name1 == listStrLineElements[0] && Name2 == listStrLineElements[1]) || (Name2 == listStrLineElements[0] && Name1 == listStrLineElements[1])){
+                  Color newColor;
+                  UnityEngine.Debug.Log("ACHOU!!!");
+                  if(indexColor == 0){newColor = Color.blue;}
+                  else if(indexColor == 1){newColor = Color.red;}
+                  else if(indexColor == 2){newColor = Color.yellow;}
+                  else {newColor = new Color(0.7f, 0.0f, 0.5f, 1.0f);}
+                  lineObjList[index].GetComponent<LineRenderer>().material = new Material(Shader.Find("Sprites/Default"));
+                  lineObjList[index].GetComponent<LineRenderer>().SetColors(newColor,newColor);
+                }
+                index = index + 1;
+              }
+            }
+          }
         }
         waitingToRunning = false;
         startRunning = true;
