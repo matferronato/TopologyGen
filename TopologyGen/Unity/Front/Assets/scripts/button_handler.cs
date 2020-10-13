@@ -362,6 +362,11 @@ public class button_handler : MonoBehaviour
         {
             ExecuteCommand("gnome-terminal -x bash -ic 'cd ../../../Automate/ ; vagrant destroy -f; bash'");
         }
+        foreach(var thisLine in lineObjList){
+          Color newColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+          thisLine.GetComponent<LineRenderer>().material = new Material(Shader.Find("Sprites/Default"));
+          thisLine.GetComponent<LineRenderer>().SetColors(newColor,newColor);
+        }
         StopButton.SetActive(false);
         StartButton.SetActive(true);
     }

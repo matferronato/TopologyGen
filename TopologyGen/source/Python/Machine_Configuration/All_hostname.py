@@ -16,7 +16,7 @@ def provideHostnames(machines, protocol):
                     file.write(dict[eachKey].replace("/24","") + " " + eachKey + "\n")
                 file.close()
                 file = open("../../../Automate/Guest_Scripts/"+eachMachine+".cnfg", "a")
-                file.write("cat /vagrant/User_Scripts/tmp/hosts.txt > /etc/hosts")
+                file.write("cat /vagrant/User_Scripts/tmp/hosts.txt > /etc/hosts\n")
                 file.close()
         except:
             continue
