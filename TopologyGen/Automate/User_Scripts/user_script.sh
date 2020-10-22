@@ -4,7 +4,7 @@ run_macro(){
 ######################################################
 #      ADD YOUR COMMANDS INSIDE THIS FUNCTIO         #
 ######################################################
-echo banana
+  echo No Macro Added
 }
 
 main() {

@@ -1,5 +1,0 @@
-FRONT
-salvar estado atual
-
-BACK
-mudar sh

@@ -3,7 +3,8 @@ create_vagrantfile(){
   #currently at /source/Bash/
   cd ../../ && chmod -R 777 ./
   cd ./source/Python/Dot_to_Vagrantfile
-  python3 reader.py ../../../TopologyInfo/topology.dot -p libvirt
+  python3 topology_converter.py ../../../TopologyInfo/topology.dot -p libvirt
+  #python3 reader.py ../../../TopologyInfo/topology.dot -p libvirt
   rm ../../../Automate/Vagrantfile
   mv Vagrantfile ../../../Automate
   cd ../../../source/Bash

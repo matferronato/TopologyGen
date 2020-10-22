@@ -551,9 +551,64 @@ def applyBgp(router, file, bgpAsNumber, graph):
     file.write("sudo service bgpd start\n")
     file.write("sudo service zebra start\n")
 
+#def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
+#    print("applying Vxlan")
+#    vxlanNetworkInterfaces = []
+#    for eachRouter in routerTable:
+#        if "vxlan=True" in serviceByMachine_dict[eachRouter]:
+#            file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
+#
+#            if not ("bgp=True" in serviceByMachine_dict[eachRouter]):
+#                #creates default gateway to send vxlan ip package
+#                indexEth = graph.returnNode(eachRouter).eth.index("eth100")
+#                network = graph.returnNode(eachRouter).ip[indexEth]
+#                otherMachine = graph.returnNode(eachRouter).connections[indexEth]
+#                indexIP = checkIfItemIsSimilar(graph.returnNode(otherMachine).ip, returnNetworkName(network))
+#                ip = graph.returnNode(otherMachine).ip[indexIP]
+#                file.write("sudo ip route del 0/0\n")
+#                file.write("sudo ip route add 0/0 via " + ip.replace("/24","") + " dev eth100 \n")
+#
+#
+#            file.write("sudo ip link add br0 type bridge\n")
+#            file.write("sudo ip link set br0 up\n")
+#            file.write("sudo ip link add name vxlan10 type vxlan id 10 dev eth100 group 239.1.1.1 dstport 4789\n")
+#
+#            correctEth = ""
+#            interfaces = list(graph.returnNode(eachRouter).eth)
+#            connections = graph.returnNode(eachRouter).connections
+#            for i, eachMachine in enumerate(connections):
+#                if "Server" in eachMachine:
+#                    if "vxlanIp=True" in serviceByMachine_dict[eachMachine]:
+#                        correctEth = graph.returnNode(eachRouter).eth[i]
+#
+#            if correctEth == "":
+#                if "eth50" in interfaces:
+#                    file.write("sudo ip link set dev eth50 master br0\n")
+#                    indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth50")
+#            else:
+#                file.write("sudo ip link set dev "+correctEth+" master br0\n")
+#                indexNetworkConnection = graph.returnNode(eachRouter).eth.index(correctEth)
+#            ipNetwork = graph.returnNode(eachRouter).ip[indexNetworkConnection]
+#            vxlanNetworkInterfaces.append(ipNetwork)
+#            file.write("sudo ip link set dev vxlan10 master br0\n")
+#            file.write("sudo ip link set vxlan10 up\n")
+#    return vxlanNetworkInterfaces
+
+
 def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
     print("applying Vxlan")
     vxlanNetworkInterfaces = []
+    vxlanEndPoints = []
+
+    for eachRouter in routerTable:
+        if "vxlan=True" in serviceByMachine_dict[eachRouter]:
+            indexEth = graph.returnNode(eachRouter).eth.index("eth100")
+            network = graph.returnNode(eachRouter).ip[indexEth]
+            vxlanEndPoints.append(network)
+            print(eachRouter, network)
+            continue
+
+
     for eachRouter in routerTable:
         if "vxlan=True" in serviceByMachine_dict[eachRouter]:
             file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
@@ -571,7 +626,11 @@ def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
 
             file.write("sudo ip link add br0 type bridge\n")
             file.write("sudo ip link set br0 up\n")
-            file.write("sudo ip link add name vxlan10 type vxlan id 10 dev eth100 group 239.1.1.1 dstport 4789\n")
+            print(vxlanEndPoints)
+            if vxlanEndPoints[0] in graph.returnNode(eachRouter).ip:
+                file.write("sudo ip link add vxlan10 type vxlan id 100 local " + vxlanEndPoints[0].replace("/24","") + " remote " + vxlanEndPoints[1].replace("/24","") + " dev eth100 dstport 4789\n")
+            else:
+                file.write("sudo ip link add vxlan10 type vxlan id 100 local " + vxlanEndPoints[1].replace("/24","") + " remote " + vxlanEndPoints[0].replace("/24","") + " dev eth100 dstport 4789\n")
 
             correctEth = ""
             interfaces = list(graph.returnNode(eachRouter).eth)
@@ -580,16 +639,16 @@ def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
                 if "Server" in eachMachine:
                     if "vxlanIp=True" in serviceByMachine_dict[eachMachine]:
                         correctEth = graph.returnNode(eachRouter).eth[i]
-
+                        file.write("sudo ip link set dev "+correctEth+" master br0\n")
+                        indexNetworkConnection = graph.returnNode(eachRouter).eth.index(correctEth)
+                        ipNetwork = graph.returnNode(eachRouter).ip[indexNetworkConnection]
+                        vxlanNetworkInterfaces.append(ipNetwork)
             if correctEth == "":
                 if "eth50" in interfaces:
                     file.write("sudo ip link set dev eth50 master br0\n")
                     indexNetworkConnection = graph.returnNode(eachRouter).eth.index("eth50")
-            else:
-                file.write("sudo ip link set dev "+correctEth+" master br0\n")
-                indexNetworkConnection = graph.returnNode(eachRouter).eth.index(correctEth)
-            ipNetwork = graph.returnNode(eachRouter).ip[indexNetworkConnection]
-            vxlanNetworkInterfaces.append(ipNetwork)
+                    ipNetwork = graph.returnNode(eachRouter).ip[indexNetworkConnection]
+                    vxlanNetworkInterfaces.append(ipNetwork)
             file.write("sudo ip link set dev vxlan10 master br0\n")
             file.write("sudo ip link set vxlan10 up\n")
     return vxlanNetworkInterfaces
