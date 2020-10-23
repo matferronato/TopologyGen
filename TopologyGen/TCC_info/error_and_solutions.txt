@@ -1,32 +1,55 @@
-The configured shell (config.ssh.shell) is invalid and unable
-to properly execute commands. The most common cause for this is
-using a shell that is unavailable on the system. Please verify
-you're using the full path to the shell and that the shell is
-executable by the SSH user.
+S0
+sudo ip addr add 100.100.100.1/24 dev eth100
+
+S1
+sudo ip addr add 100.100.100.2/24 dev eth100
+
+S2
+sudo ip addr add 100.100.100.3/24 dev eth100
 
 
-Vagrant.configure("2") do |config|
-    config.vm.box = "dfly"
-    config.ssh.shell = 'sh'
-end
+R0
+
+sudo ip link add br0 type bridge
+sudo ip link set br0 up
+sudo ip link set dev eth1 master br0
+sudo ip link add vxlan10 type vxlan id 100 local 2.2.2.1 remote 2.2.2.2 dev eth100 dstport 4789
+sudo ip link set vxlan10 up
+sudo ip link set dev vxlan10 master br0
+
+sudo ip link add vxlan20 type vxlan id 200 local 2.2.2.1 remote 3.3.3.2 dev eth100 dstport 4790
+sudo ip link set vxlan20 up
+sudo ip link set dev vxlan20 master br0
+sudo apt-get install bridge-utils
+
+R1
+
+sudo ip link add br0 type bridge
+sudo ip link set br0 up
+sudo ip link set dev eth1 master br0
+sudo ip link add vxlan10 type vxlan id 100 local 2.2.2.2 remote 2.2.2.1 dev eth100 dstport 4789
+sudo ip link set vxlan10 up
+sudo ip link set dev vxlan10 master br0
+
+sudo ip link add vxlan20 type vxlan id 200 local 2.2.2.2 remote 3.3.3.2 dev eth100 dstport 4790
+sudo ip link set vxlan20 up
+sudo ip link set dev vxlan20 master br0
+sudo apt-get install bridge-utils
+
+R2
+
+sudo ip link add br0 type bridge
+sudo ip link set br0 up
+sudo ip link set dev eth1 master br0
+sudo ip link add vxlan10 type vxlan id 100 local 3.3.3.2 remote 2.2.2.1 dev eth100 dstport 4789
+sudo ip link set vxlan10 up
+sudo ip link set dev vxlan10 master br0
+
+sudo ip link add vxlan20 type vxlan id 200 local 3.3.3.2 remote 2.2.2.2 dev eth100 dstport 4790
+sudo ip link set vxlan20 up
+sudo ip link set dev vxlan20 master br0
+sudo apt-get install bridge-utils
 
 
 
-
-
-
-#      device.vm.provision :shell , :inline => <<-vagrant_interface_rule
-#echo "  INFO: Adding UDEV Rule: Vagrant interface = eth1"
-#echo 'ACTION=="add", SUBSYSTEM=="net", ATTR{ifindex}=="2", NAME="eth1", SUBSYSTEMS=="pci"' >> /etc/udev/rules.d/70-persistent-net.rules
-#echo "#### UDEV Rules (/etc/udev/rules.d/70-persistent-net.rules) ####"
-#cat /etc/udev/rules.d/70-persistent-net.rules
-#vagrant_interface_rule
-
-# Run Any Platform Specific Code and Apply the interface Re-map
-#   (may or may not perform a reboot depending on platform)
-
-
-yum install quagga
-yum install quagga-doc
-
- bgp router-id 10.255.1.95 1
+ip link add vxlan100 type vxlan id 100 dstport 4789 local  group  dev eth0 ttl 5

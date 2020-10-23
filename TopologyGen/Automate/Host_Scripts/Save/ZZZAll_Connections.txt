@@ -1,10 +1,8 @@
-Router-0 Server-5
+Router-3 Server-4
+Router-2 Server-3
 Router-0 Server-0
 Router-0 Server-1
-Router-2 Server-2
-Router-2 Server-3
-Router-3 Server-4
-Router-2 Router-3
-Router-3 Router-0
+Router-0 Server-2
 Router-1 Router-0
 Router-2 Router-1
+Router-3 Router-1
