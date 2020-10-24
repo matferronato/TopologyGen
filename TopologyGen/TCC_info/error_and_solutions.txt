@@ -53,3 +53,33 @@ sudo apt-get install bridge-utils
 
 
 ip link add vxlan100 type vxlan id 100 dstport 4789 local  group  dev eth0 ttl 5
+
+
+auto gre1
+iface gre1 inet tunnel
+  address 192.168.168.1
+  netmask 255.255.255.252
+  mode gre
+  endpoint <REMOTE PUBLIC IP>
+  dstaddr 100.100.100.2
+  local <LOCAL PUBLIC IP>
+  post-up route add -net 3.3.3.0 netmask 255.255.255.0 gw 100.100.100.2
+
+  auto gre1
+  iface gre1 inet tunnel
+    address 192.168.168.1
+    netmask 255.255.255.252
+    mode gre
+    endpoint <REMOTE PUBLIC IP>
+    dstaddr 100.100.100.1
+    local <LOCAL PUBLIC IP>
+    post-up route add -net 4.4.4.0 netmask 255.255.255.0 gw 100.100.100.1
+
+
+ip link add gre1 type gretap remote 3.3.3.2 local 4.4.4.1 dev eth100
+ip link set dev gre1 up
+sudo ip addr add 100.100.100.1/24 dev gre1
+
+sudo ip link add gre1 type gretap remote 4.4.4.1 local 3.3.3.2 dev eth100
+sudo ip link set dev gre1 up
+sudo ip addr add 100.100.100.2/24 dev gre1

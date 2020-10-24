@@ -1,0 +1,4 @@
+fotos da topologia
+graficos
+adicionar stp info
+mudar user bash script
