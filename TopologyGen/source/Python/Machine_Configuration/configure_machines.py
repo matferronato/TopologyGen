@@ -177,7 +177,7 @@ def getIpAndEth(machineTypes):
     for line in lines:
         for eachKey in machineTypes:
             for eachMachine in machineTypes[eachKey]:
-                if eachMachine in line:
+                if eachMachine+" " in line:
                     defaultList = []
                     if eachMachine in interfaces:
                         interfaces[eachMachine].append((line.split()[1], line.split()[2]))
@@ -311,6 +311,15 @@ def returnPlan(myTree, localNode):
         eth = parent.payload
     return childEth
 
+def printGraph(graph):
+    mykeys = []
+    for eachKey in graph.structure:
+        mykeys.append(eachKey)
+    mykeys.sort()
+    for eachKey in mykeys:
+        print(eachKey)
+        for i, eachEth in enumerate(graph.returnNode(eachKey).eth):
+            print(" ",eachEth, graph.returnNode(eachKey).ip[i])
 
 def findEth(graph,router,network, blockedEth=None, blockedNode=None):
     myTree = UpwardTree()
@@ -370,19 +379,22 @@ def runRoutesCleanUp(routeTable, graph, routers, networks):
     for eachRouter in routers:
         for eachNetwork in networks:
             #print(routeTable[eachRouter][eachNetwork],eachRouter,eachNetwork)
-            indexNetworkConnection = graph.returnNode(eachRouter).eth.index(routeTable[eachRouter][eachNetwork])
-            otherMachine = graph.returnNode(eachRouter).connections[indexNetworkConnection]
-            if("Router" in otherMachine):
-                #print(eachRouter,eachNetwork, routeTable[eachRouter][eachNetwork], "via", otherMachine)
-                indexOtherNetworkConnection = graph.returnNode(otherMachine).eth.index(routeTable[otherMachine][eachNetwork])
-                myMachine = graph.returnNode(otherMachine).connections[indexOtherNetworkConnection]
-                if(eachRouter == myMachine):
-                    networkName = returnNetworkName(eachNetwork)
-                    indexIP = checkIfItemIsSimilar(graph.returnNode(eachRouter).ip, networkName)
-                    if(indexIP == None):
-                        newEth = findEth(graph,eachRouter,eachNetwork, 1, otherMachine)
-                        routeTable[eachRouter][eachNetwork] = newEth
-                        routeTable[eachRouter][eachNetwork]
+            try:
+                indexNetworkConnection = graph.returnNode(eachRouter).eth.index(routeTable[eachRouter][eachNetwork])
+                otherMachine = graph.returnNode(eachRouter).connections[indexNetworkConnection]
+                if("Router" in otherMachine):
+                    #print(eachRouter,eachNetwork, routeTable[eachRouter][eachNetwork], "via", otherMachine)
+                    indexOtherNetworkConnection = graph.returnNode(otherMachine).eth.index(routeTable[otherMachine][eachNetwork])
+                    myMachine = graph.returnNode(otherMachine).connections[indexOtherNetworkConnection]
+                    if(eachRouter == myMachine):
+                        networkName = returnNetworkName(eachNetwork)
+                        indexIP = checkIfItemIsSimilar(graph.returnNode(eachRouter).ip, networkName)
+                        if(indexIP == None):
+                            newEth = findEth(graph,eachRouter,eachNetwork, 1, otherMachine)
+                            routeTable[eachRouter][eachNetwork] = newEth
+                            routeTable[eachRouter][eachNetwork]
+            except:
+                continue
 
 def writeStaticRoutes(routersRouterTable, routers, networks):
     print("creating structure for machine names")
@@ -486,6 +498,7 @@ def setupRouters(routers, routerTable, serviceByMachine_dict, graph):
                     otherIP = graph.returnNode(otherMachine).ip[otherIPindex].replace("/24","")
                     file.write("sudo ip route add "+eachNetwork+" via " + otherIP + " dev " + myEth + "\n")
 
+
 def applyBgp(router, file, bgpAsNumber, graph):
     file.write("sudo apt-get -y install quagga\n")
     file.write("sudo yum install quagga\n")
@@ -584,7 +597,7 @@ def applyGRERouters(routers, routerTable, serviceByMachine_dict, graph):
                     continue
                 else:
                     greName = "gre"+str(currentGREIndexer)
-                    greIP = "100.100.100."+str(currentAdrees)+"/24"
+                    greIP = "200.200.200."+str(currentAdrees)+"/24"
                     file.write("sudo ip link add "+greName+" type gretap remote "+otherIP+" local "+currentGREAddress+" dev eth100\n")
                     file.write("sudo ip link set dev "+greName+" up\n")
                     file.write("sudo ip addr add "+greIP+" dev "+greName+"\n")

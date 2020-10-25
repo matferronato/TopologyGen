@@ -1,6 +1,10 @@
-Router-0 hashicorp/bionic64 1.0.282 1MB router=True  gre=True vxlan=False bgp=False hostname=False
-Router-1 hashicorp/bionic64 1.0.282 1MB router=True  gre=False vxlan=False bgp=False hostname=False
-Router-2 hashicorp/bionic64 1.0.282 1MB router=True  gre=False vxlan=False bgp=False hostname=False
-Router-3 hashicorp/bionic64 1.0.282 1MB router=True  gre=True vxlan=False bgp=False hostname=False
-Server-0 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=False Vlan1=False Vlan2=False Vlan3=False
-Server-1 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=False Vlan1=False Vlan2=False Vlan3=False
+Server-0 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=False Vlan2=True Vlan3=False
+Server-1 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=False Vlan2=True Vlan3=False
+Server-2 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=False Vlan2=True Vlan3=False
+Server-3 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=True Vlan2=False Vlan3=False
+Server-4 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=False Vlan2=True Vlan3=False
+Server-5 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=False Vlan2=True Vlan3=False
+Server-6 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=True Vlan2=False Vlan3=False
+Server-7 hashicorp/bionic64 1.0.282 1MB server=True  vxlanIp=False hostname=True Vlan1=True Vlan2=False Vlan3=False
+Switch-0 hashicorp/bionic64 1.0.282 1MB switch=True  spanningTree=False vlan=False hostname=True CustomVlan=True hub=False
+Switch-1 hashicorp/bionic64 1.0.282 1MB switch=True  spanningTree=False vlan=False hostname=True CustomVlan=True hub=False

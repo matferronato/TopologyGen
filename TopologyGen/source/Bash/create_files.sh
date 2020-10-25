@@ -15,7 +15,7 @@ cp ../../Automate/User_Scripts/Python_Services/* ../../source/Python/Machine_Con
 allMachines=`cat ../../Automate/Host_Scripts/all_machines.txt`
 
 for eachMachine in $allMachines; do
-  cat ../../Automate/Host_Scripts/ip_info.txt | grep $eachMachine >> ../../Automate/Guest_Scripts/Interface_Information/$eachMachine.interface
+  cat ../../Automate/Host_Scripts/ip_info.txt | grep ${eachMachine}'\s'  >> ../../Automate/Guest_Scripts/Interface_Information/$eachMachine.interface
   touch ../../Automate/Guest_Scripts/$eachMachine.cnfg
 done
 }

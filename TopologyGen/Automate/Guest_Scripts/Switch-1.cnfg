@@ -1,0 +1,44 @@
+sudo ip addr add 0.0.0.0 dev swp1
+sudo ip link set swp1 up
+sudo ifconfig swp1 0.0.0.0 up
+sudo ip addr add 0.0.0.0 dev swp2
+sudo ip link set swp2 up
+sudo ifconfig swp2 0.0.0.0 up
+sudo ip addr add 0.0.0.0 dev swp3
+sudo ip link set swp3 up
+sudo ifconfig swp3 0.0.0.0 up
+sudo ip addr add 0.0.0.0 dev swp4
+sudo ip link set swp4 up
+sudo ifconfig swp4 0.0.0.0 up
+sudo ip addr add 0.0.0.0 dev swp50
+sudo ip link set swp50 up
+sudo ifconfig swp50 0.0.0.0 up
+sudo ip link add name br0 type bridge
+sudo ip link set dev br0 up
+sudo ip link set dev swp1 master br0
+sudo ip link set dev swp2 master br0
+sudo ip link set dev swp3 master br0
+sudo ip link set dev swp4 master br0
+sudo ip link set dev swp50 master br0
+cat /vagrant/User_Scripts/tmp/hosts.txt > /etc/hosts
+sudo ip link set br0 down
+sudo ip link delete br0 type bridge
+sudo ip link add name br0 type bridge
+sudo ip link set dev br0 up
+sudo ip link add link swp50 name swp50.100 type vlan id 100
+sudo ip link set dev swp50.100 up
+sudo ip link set dev swp50.100 master br0
+sudo ip link add name br1 type bridge
+sudo ip link set dev br1 up
+sudo ip link add link swp50 name swp50.200 type vlan id 200
+sudo ip link set dev swp50.200 up
+sudo ip link set dev swp50.200 master br1
+sudo ip link add name br2 type bridge
+sudo ip link set dev br2 up
+sudo ip link add link swp50 name swp50.300 type vlan id 300
+sudo ip link set dev swp50.300 up
+sudo ip link set dev swp50.300 master br2
+sudo ip link set dev swp1 master br0
+sudo ip link set dev swp2 master br0
+sudo ip link set dev swp3 master br1
+sudo ip link set dev swp4 master br1
