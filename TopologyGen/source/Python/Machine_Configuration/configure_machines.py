@@ -611,6 +611,47 @@ def applyGRERouters(routers, routerTable, serviceByMachine_dict, graph):
                     color.write(otherMachine+" "+eachRouter+"\n")
                     color.close()
 
+def applyGeneveRouters(routers, routerTable, serviceByMachine_dict, graph):
+    print("applying Geneve")
+    currentAdrees=1
+    geneveNetworkInterfaces = []
+    geneveEndPoints = []
+    for eachRouter in routerTable:
+        if "geneve=True" in serviceByMachine_dict[eachRouter]:
+            indexEth = graph.returnNode(eachRouter).eth.index("eth100")
+            network = graph.returnNode(eachRouter).ip[indexEth]
+            geneveEndPoints.append(network)
+            continue
+
+    for eachRouter in routerTable:
+        if "geneve=True" in serviceByMachine_dict[eachRouter]:
+            file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
+            currentgeneveAddress = ""
+            currentgeneveIndexer=1
+            for eachAddressIP in geneveEndPoints:
+                    if eachAddressIP in graph.returnNode(eachRouter).ip:
+                        currentgeneveAddress = eachAddressIP.replace("/24","")
+                        break
+            for eachAddressIP in geneveEndPoints:
+                otherIP = eachAddressIP.replace("/24","")
+                if otherIP == currentgeneveAddress:
+                    continue
+                else:
+                    geneveName = "geneve"+str(currentgeneveIndexer)
+                    geneveIP = "150.150.150."+str(currentAdrees)+"/24"
+                    geneveID = str(100*currentgeneveIndexer)
+                    file.write("sudo ip link add name "+geneveName+" type geneve id "+geneveID+" remote "+otherIP+"\n")
+                    file.write("sudo ip link set dev "+geneveName+" up\n")
+                    file.write("sudo ip addr add "+geneveIP+" dev "+geneveName+"\n")
+                    currentgeneveIndexer=currentgeneveIndexer+1
+                    currentAdrees=currentAdrees+1
+
+                    index =  graph.returnNode(eachRouter).eth.index("eth100")
+                    correctEth =  graph.returnNode(eachRouter).eth[index]
+                    otherMachine = graph.returnNode(eachRouter).connections[index]
+                    color = open("../../../Automate/Guest_Scripts/Color_Information/Red.cnfg", "a")
+                    color.write(otherMachine+" "+eachRouter+"\n")
+                    color.close()
 
 def applyVxlanRouters(routers, routerTable, serviceByMachine_dict, graph):
     print("applying Vxlan to Router")
@@ -720,6 +761,7 @@ def main():
     setupSwitchs(machinesByType_dict["Switchs"], serviceByMachine_dict, graph)
     setupRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
     applyGRERouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
+    applyGeneveRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
     vxlanNetworkInterfaces = applyVxlanRouters(machinesByType_dict["Routers"], routersRouterTable_dict, serviceByMachine_dict, graph)
     applyVxlanServers(machinesByType_dict["Servers"], serviceByMachine_dict, vxlanNetworkInterfaces, graph)
 

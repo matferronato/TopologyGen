@@ -1,6 +1,0 @@
-sudo ip addr add 1.1.1.7/24 dev eth50
-sudo ip link set eth50 up
-sudo ifconfig eth50 1.1.1.7/24 up
-sudo ip route del 0/0
-sudo ip route add 0/0 via 1.1.1.1 dev eth50
-cat /vagrant/User_Scripts/tmp/hosts.txt > /etc/hosts

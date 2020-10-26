@@ -1,0 +1,20 @@
+sudo ip addr add 1.1.1.1/24 dev eth1
+sudo ip link set eth1 up
+sudo ifconfig eth1 1.1.1.1/24 up
+sudo ip addr add 5.5.5.2/24 dev eth100
+sudo ip link set eth100 up
+sudo ifconfig eth100 5.5.5.2/24 up
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo apt-get -y install quagga
+sudo yum install quagga
+sudo cat /vagrant/Guest_Scripts/BGP_Information/Router-3_bgpd.conf > /etc/quagga/bgpd.conf
+sudo cat /vagrant/Guest_Scripts/BGP_Information/Router-3_zebra.conf > /etc/quagga/zebra.conf
+sudo cat /vagrant/Guest_Scripts/BGP_Information/Router-3_vtysh.conf > /etc/quagga/vtysh.conf
+sudo chown quagga:quagga /etc/quagga/*.conf
+sudo chown quagga:quaggavty /etc/quagga/vtysh.conf
+sudo chmod 640 /etc/quagga/*.conf
+sudo service bgpd start
+sudo service zebra start
+sudo ip link add gre1 type gretap remote 4.4.4.1 local 5.5.5.2 dev eth100
+sudo ip link set dev gre1 up
+sudo ip addr add 200.200.200.2/24 dev gre1
