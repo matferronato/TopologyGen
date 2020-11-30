@@ -71,3 +71,8 @@ https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=windows
 https://app.vagrantup.com/boxes/search?page=2
 https://app.vagrantup.com/boxes/search
 https://app.vagrantup.com/boxes/search
+https://app.vagrantup.com/boxes/search
+https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=windows
+https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=windows
+https://app.vagrantup.com/boxes/search?utf8=&sort=downloads&provider=&q=centos
+https://app.vagrantup.com/boxes/search

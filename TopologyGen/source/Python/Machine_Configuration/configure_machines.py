@@ -334,8 +334,7 @@ def findEth(graph,router,network, blockedEth=None, blockedNode=None):
     fringe.append(thisFamily)
     while(1):
         if len(fringe) == 0 :
-            print(network, family.me ,"entrou em null")
-            time.sleep(2)
+            print(family.me , "sem rota para", network )
             return "null_port"
         family = fringe.pop()
         child = family.getFirstBorn()
@@ -481,6 +480,7 @@ def setupRouters(routers, routerTable, serviceByMachine_dict, graph):
         bgpAsNumber_dict[eachRouter] = "76"+str(autonomous_system)
         autonomous_system = autonomous_system + 1
     for eachRouter in routerTable:
+        print("->", eachRouter)
         file = open("../../../Automate/Guest_Scripts/"+eachRouter+".cnfg", "a")
         file.write("sudo sysctl -w net.ipv4.ip_forward=1\n")
         if "bgp=True" in serviceByMachine_dict[eachRouter]:
@@ -489,6 +489,7 @@ def setupRouters(routers, routerTable, serviceByMachine_dict, graph):
             for eachNetwork in routerTable[eachRouter]:
                 otherIPlist = []
                 myEth = routerTable[eachRouter][eachNetwork]
+                if "null_port" in myEth: continue 
                 indexEth = graph.returnNode(eachRouter).eth.index(myEth)
                 myIP = graph.returnNode(eachRouter).ip[indexEth]
                 otherMachine = graph.returnNode(eachRouter).connections[indexEth]

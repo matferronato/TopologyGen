@@ -1,2 +1,5 @@
-Router-0 3.3.3.1/24 eth1
+Router-0 2.2.2.1/24 eth50
+Router-0 3.3.3.1/24 eth51
 Router-0 4.4.4.1/24 eth100
+Router-0 6.6.6.1/24 eth101
+Router-0 8.8.8.1/24 eth102

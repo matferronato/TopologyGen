@@ -10,4 +10,3 @@ config_machines
 running_vagrant
 apply_configs
 unlock_files
-run_macro

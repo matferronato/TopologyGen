@@ -3,3 +3,4 @@ cd /home/matferronato/Code/TCC/TopologyGen/TopologyGen
 cd ./source/Bash
 ./converter.sh
 cd ../../
+./Automate/User_Scripts/user_script.sh
